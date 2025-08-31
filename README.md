@@ -19,19 +19,64 @@ cp .env.example .env
 # 3. Launch with Docker
 docker compose up -d
 
-# 4. Test the API
-curl http://localhost:8000/api/v1/health
-curl http://localhost:8000/api/v1/devices/
-curl http://localhost:8000/docs
+# 4. Validate deployment (RECOMMENDED)
+./scripts/validate_deployment.sh
 ```
+
+## Post-Deployment Validation
+
+**Run the validation script to confirm everything works correctly:**
+
+```bash
+./scripts/validate_deployment.sh
+```
+
+**Expected Output:**
+```
+Phase 1: Basic Health Checks
+  Health Check... PASS (0.01s)
+
+Phase 2: Cache Performance Demo  
+  Device Listing... PASS (19.57s)
+    Second call (cached)... PASS (0.01s) [1779x faster]
+  Cluster Info... PASS (0.01s)
+
+Phase 3: System Metrics
+  Device count: 7
+```
+
+**Performance Insights:**
+- Initial API calls: 30-60 seconds (Microshare API fetch)
+- Cached responses: <1 second (100-2000x speedup)
+- Cache TTL: 300 seconds (5 minutes)
+
+**If validation fails, this indicates a real issue - not a timeout problem.**
 
 ## Working API Endpoints
 
+After validation passes, these endpoints are ready for use:
+
 - **Health Check**: `GET /api/v1/health` - Service status and version
-- **All Devices**: `GET /api/v1/devices/` - Returns all devices with location data
+- **All Devices**: `GET /api/v1/devices/` - Returns all devices with location data (use 60s timeout)
 - **Device Clusters**: `GET /api/v1/devices/clusters` - Returns cluster information with cache metadata
 - **Specific Device**: `GET /api/v1/devices/{device_id}` - Get individual device details
 - **API Documentation**: `http://localhost:8000/docs` - Interactive Swagger UI
+
+## Developer Quick Commands
+
+```bash
+# Get device count (always use proper timeout)
+curl -s --max-time 60 http://localhost:8000/api/v1/devices/ | jq '.devices | length'
+
+# Monitor cache performance
+curl -s http://localhost:8000/api/v1/cache/stats | jq .
+
+# Clear cache for testing
+curl -s -X DELETE http://localhost:8000/api/v1/cache
+
+# Interactive documentation
+open http://localhost:8000/docs
+```
 
 ## Production Features
 
@@ -122,27 +167,24 @@ DEBUG=true
 
 The service includes:
 - Multi-stage Dockerfile with production and development targets
-- Health checks with curl
+- Health checks with curl and jq
 - Automatic restart policies
 - Volume mounts for logs and data
 - Configurable timeout settings
 
-## Testing
-
-```bash
-# Run validation
-python3 validate_setup.py
-
-# Test Docker deployment
-docker compose up -d
-docker compose ps
-docker compose logs microshare-api
-
-# Performance testing
-time curl -s http://localhost:8000/api/v1/devices/ | jq '.total_count'
-```
-
 ## Troubleshooting
+
+### Performance Expectations
+
+**This is normal behavior:**
+- First API call: 30-60 seconds (fetching from Microshare)
+- Cached calls: <1 second
+- Empty responses initially (until cache builds)
+
+**This indicates a problem:**
+- Validation script fails
+- Health check returns errors
+- Consistent timeouts >60 seconds
 
 ### Common Issues
 
@@ -154,25 +196,16 @@ docker compose logs microshare-api
 
 **API timeouts:**
 ```bash
-# Increase timeout in .env
-API_TIMEOUT=60
-docker compose restart microshare-api
+# Always use proper timeouts for device endpoints
+curl --max-time 60 http://localhost:8000/api/v1/devices/
 ```
 
 **Authentication errors:**
 ```bash
-# Verify credentials in .env match working values
-curl -X POST "https://dauth.microshare.io/oauth2/token" -d "username=..."
+# Test direct Microshare API access
+TOKEN=$(curl -s "https://dauth.microshare.io/oauth2/token?username=cp_erp_sample@maildrop.cc&password=AVH7dbz!brt-rfn0tdk&client_id=4DA225C6-94AA-4600-8509-2661CC2A7724&grant_type=password&scope=ALL:ALL" | jq -r '.access_token')
+echo "Token: $TOKEN"
 ```
-
-### Working Solution Confirmed
-
-This repository contains a fully tested solution:
-- All Docker deployment issues resolved
-- Import path conflicts fixed
-- API timeouts configured properly
-- Enterprise-grade caching implemented
-- Complete device data processing validated
 
 ## Documentation
 
@@ -208,6 +241,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-**Ready to integrate your ERP with Microshare?** Start with the 5-minute setup above.
+**Ready to integrate your ERP with Microshare?** Start with the 5-minute setup above, then run `./scripts/validate_deployment.sh` to confirm everything works.
 
 For production deployment guidance, see [DEPLOYMENT.md](docs/DEPLOYMENT.md)

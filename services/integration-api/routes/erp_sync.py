@@ -8,10 +8,10 @@ import xmlrpc.client
 import os
 from datetime import datetime
 
-from ..dependencies import get_microshare_client
-from core.client import MicroshareDeviceClient
-from core.enums import DeviceType
-from core.exceptions import MicroshareAPIError
+from dependencies import get_microshare_client
+from src.microshare_client.client import MicroshareDeviceClient
+from src.microshare_client.enums import DeviceType
+from src.microshare_client.exceptions import MicroshareAPIError
 
 router = APIRouter(tags=["ERP Synchronization"])
 

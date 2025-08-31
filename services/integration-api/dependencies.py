@@ -5,8 +5,8 @@ import os
 from functools import lru_cache
 from typing import Dict, Any
 
-from core.client import MicroshareDeviceClient
-from core.exceptions import AuthenticationError
+from src.microshare_client.client import MicroshareDeviceClient
+from src.microshare_client.exceptions import AuthenticationError
 
 @lru_cache()
 def get_settings() -> Dict[str, Any]:

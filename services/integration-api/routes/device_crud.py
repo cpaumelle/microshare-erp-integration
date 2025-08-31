@@ -5,11 +5,11 @@ from fastapi import APIRouter, HTTPException, Depends, Query, Path, Body
 from typing import Dict, Any, Optional
 import time
 
-from ..dependencies import get_microshare_client
-from core.client import MicroshareDeviceClient
-from core.enums import DeviceType
-from core.exceptions import MicroshareAPIError
-from core.models import DeviceCreateModel, DeviceUpdateModel
+from dependencies import get_microshare_client
+from src.microshare_client.client import MicroshareDeviceClient
+from src.microshare_client.enums import DeviceType
+from src.microshare_client.exceptions import MicroshareAPIError
+from src.microshare_client.models import DeviceCreateModel, DeviceUpdateModel
 
 router = APIRouter(tags=["Device CRUD - Complete"], prefix="/devices")
 
@@ -47,7 +47,7 @@ async def get_cluster_cached(
 ):
     """Get specific device cluster with caching"""
     try:
-        from core.client import MicroshareDeviceClient
+        from src.microshare_client.client import MicroshareDeviceClient
 
         start_time = time.time()
         result = await client.get_specific_cluster(cluster_id, device_type)

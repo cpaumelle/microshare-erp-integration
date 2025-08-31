@@ -6,9 +6,9 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
 import time
 
-from ..dependencies import get_microshare_client
-from core.client import MicroshareDeviceClient
-from core.exceptions import MicroshareAPIError, AuthenticationError
+from dependencies import get_microshare_client
+from src.microshare_client.client import MicroshareDeviceClient
+from src.microshare_client.exceptions import MicroshareAPIError, AuthenticationError
 
 router = APIRouter(tags=["Health & Status"])
 
@@ -52,7 +52,7 @@ async def microshare_health_check(
 async def cache_health_check():
     """Check cache system status"""
     try:
-        from core.cache import cluster_cache
+        from src.microshare_client.cache import cluster_cache
         
         test_key = f"health_check_{int(time.time())}"
         test_value = {"test": "data", "timestamp": time.time()}
@@ -88,7 +88,7 @@ async def system_status(
 ):
     """Comprehensive system status check"""
     try:
-        from core.cache import cluster_cache
+        from src.microshare_client.cache import cluster_cache
         
         start_time = time.time()
         clusters = await client.list_all_clusters()

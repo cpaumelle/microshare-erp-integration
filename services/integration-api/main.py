@@ -15,9 +15,9 @@ from fastapi.responses import JSONResponse
 import httpx
 
 # Import our modules
-from core.client import MicroshareDeviceClient
-from core.exceptions import MicroshareAPIError, AuthenticationError
-from api.routes import health, device_crud, erp_sync, erp_discovery
+from src.microshare_client.client import MicroshareDeviceClient
+from src.microshare_client.exceptions import MicroshareAPIError, AuthenticationError
+from routes import health, device_crud, erp_sync, erp_discovery
 
 # Create FastAPI app
 app = FastAPI(
@@ -92,7 +92,7 @@ async def root():
 @app.get("/api/v1/cache/stats")
 async def cache_stats():
     """Get cache statistics"""
-    from core.cache import cluster_cache
+    from src.microshare_client.cache import cluster_cache
     cached_items = len(cluster_cache._cache)
     expired_count = cluster_cache.cleanup_expired()
     return {
@@ -104,7 +104,7 @@ async def cache_stats():
 @app.delete("/api/v1/cache")
 async def clear_cache():
     """Clear all cache entries"""
-    from core.cache import cluster_cache
+    from src.microshare_client.cache import cluster_cache
     cluster_cache.clear()
     return {"message": "Cache cleared successfully"}
 

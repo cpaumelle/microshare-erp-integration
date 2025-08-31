@@ -1,0 +1,48 @@
+services:
+  microshare-api:
+    build: 
+      context: ./services/integration-api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - MICROSHARE_AUTH_URL=${MICROSHARE_AUTH_URL:-https://dauth.microshare.io}
+      - MICROSHARE_API_URL=${MICROSHARE_API_URL:-https://dapi.microshare.io}
+      - MICROSHARE_USERNAME=${MICROSHARE_USERNAME}
+      - MICROSHARE_PASSWORD=${MICROSHARE_PASSWORD}
+      - MICROSHARE_API_KEY=${MICROSHARE_API_KEY}
+      - DEVICE_RECORD_TYPE=${DEVICE_RECORD_TYPE:-io.microshare.trap.packed}
+      - INCIDENT_RECORD_TYPE=${INCIDENT_RECORD_TYPE:-io.microshare.demo.sensor.unpacked}
+      - CACHE_TTL=${CACHE_TTL:-300}
+      - API_TIMEOUT=${API_TIMEOUT:-30}
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - microshare-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - microshare-api
+    networks:
+      - microshare-network
+    profiles:
+      - frontend
+
+networks:
+  microshare-network:
+    driver: bridge
+
+volumes:
+  logs:
+  data:

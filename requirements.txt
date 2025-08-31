@@ -1,0 +1,9 @@
+# Microshare ERP Integration API Dependencies
+# Verified working versions - August 30, 2025
+
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+httpx>=0.25.0
+python-multipart>=0.0.6
+pydantic>=2.0.0
+requests>=2.31.0

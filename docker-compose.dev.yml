@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  microshare-api:
+    build:
+      context: ./services/integration-api
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./services/integration-api:/app
+      - ./src:/app/src
+      - ./core:/app/core
+    environment:
+      - DEBUG=true
+      - RELOAD=true
+    ports:
+      - "8000:8000"
+      - "5678:5678"  # Debug port
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--log-level", "debug"]
+
+  frontend:
+    profiles:
+      - frontend

@@ -6,7 +6,11 @@ Production-ready FastAPI service for ERP integration with Microshare EverSmart R
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](docker-compose.yml)
 
-## Quick Start (5 Minutes)
+[Read this Documentation](erp_sync_documentation.md) for an example of ERP integration with a demo environment
+
+The [Microshare Device CRUD documentation](microshare_device_crud.md) describes the most commmon patterns you are likely to use
+
+## Quick Start Install (5 Minutes)
 
 ```bash
 # 1. Clone and setup

@@ -74,7 +74,7 @@ This document outlines a bidirectional synchronization system between traditiona
 ```
 
 #### Microshare IoT Side
-```json
+```jsonc
 {
   "device_structure": {
     "id": "DevEUI or default 00-00-00-00-00-00-00-00",

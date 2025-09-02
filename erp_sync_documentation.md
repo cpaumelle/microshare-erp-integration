@@ -59,16 +59,16 @@ This document outlines a bidirectional synchronization system between traditiona
 ### Data Structure Mapping
 
 #### Odoo ERP Side
-```json
+```jsonc
 {
-  "model": "product.product",
+  "model": "product.product",  
   "category_filter": "categ_id = 4",
   "fields": {
     "id": "Unique Odoo record ID (1-11+)",
-    "default_code": "ERP reference (ERP024_025_01)",
-    "barcode": "DevEUI storage field", 
-    "name": "Location description",
-    "active": "Inspection point status"
+    "default_code": "ERP reference (ERP024_025_01)",    // This is the unique reference used by the ERP for the inspection point
+    "barcode": "DevEUI storage field",                  // This is the Microshare unique device ID which can be synched back to the ERP
+    "name": "Location description",                     // This is the location array descibing the customer, building, floor, room, etc
+    "active": "Inspection point status"                 // This may be used to record whether an inspection point is equipped with a sensor or not
   }
 }
 ```

@@ -213,7 +213,7 @@ echo "Token: $TOKEN"
 
 ## Documentation
 
-- [Microshare Device CRUD Guide](docs/microshare_device_crud_guide.md) - Complete API documentation
+- [Microshare Device CRUD Guide](microshare_device_crud.md) - Complete API documentation
 - [Development Credentials](docs/MICROSHARE_CREDENTIALS.md) - Platform access guide
 - [Docker Deployment](docker-compose.yml) - Production configuration
 

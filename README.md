@@ -95,3 +95,28 @@ Authentication: ~900ms
 Device Discovery: 7 devices, 2 clusters
 Direct Cluster Access: ~500ms per cluster
 Concurrent Operations: Optimized parallel processing
+
+## Deployment Validation
+
+After installation, validate your deployment:
+```bash
+# Option 1: Validate with running server
+PYTHONPATH=. python3 start_api.py &  # Start in background
+python3 validate_deployment.py       # Run validation
+
+# Option 2: Use installer with integrated validation
+./quick_install.sh                   # Choose option 2 for automatic validation
+The validator will test:
+
+Authentication with your credentials
+Device discovery performance
+API response times
+7 devices across 2 clusters detection
+Performance benchmarks (45x improvement validation)
+
+Expected Validation Results
+
+Authentication: ~900ms
+Device Discovery: 7 devices, 2 clusters found
+Performance: 45x faster than baseline discovery
+ERP Integration: 6/7 devices ready for integration

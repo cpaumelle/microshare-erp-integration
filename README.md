@@ -36,7 +36,7 @@ MICROSHARE_PASSWORD=your-secure-password
 Key Features
 
 Web App Authentication: No API keys needed - just username/password
-Performance Optimized: 45x faster device retrieval with caching
+Performance Optimized: Optimized performance device retrieval with caching
 Clean Architecture: Fixed Python imports, no container crashes
 Multi-Environment: Supports both development and production Microshare
 Production Ready: Docker deployment with health checks
@@ -111,12 +111,26 @@ The validator will test:
 Authentication with your credentials
 Device discovery performance
 API response times
-7 devices across 2 clusters detection
+Device discovery (results vary by account)
 Performance benchmarks (45x improvement validation)
 
 Expected Validation Results
 
 Authentication: ~900ms
 Device Discovery: 7 devices, 2 clusters found
-Performance: 45x faster than baseline discovery
-ERP Integration: 6/7 devices ready for integration
+Performance: Optimized performance than baseline discovery
+ERP Integration: ERP readiness analysis for integration
+
+## Validation Results
+
+The validator tests core functionality:
+- API connectivity and health
+- Authentication configuration  
+- Device discovery (finds whatever is in your account)
+- Basic performance testing
+
+Results will vary based on:
+- Your Microshare account data
+- Network conditions
+- Environment (dev/prod)
+- Number of devices/clusters in your account

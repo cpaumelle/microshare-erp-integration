@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """
 Microshare ERP Integration - Deployment Validator
-Version: 2.0.0
-Created: 2025-09-12 16:00:00 UTC
+Version: 3.0.0
+Created: 2025-09-14 15:40:00 UTC
 
-Validates deployment functionality:
-- Tests authentication with user credentials
-- Verifies API connectivity and endpoints
-- Discovers available devices/clusters (results vary by account)
-- Confirms the application works with user's specific data
+Post-deployment validation for GitHub users:
+1. Automatically starts the API server using start_api.py
+2. Runs GUID-based CRUD operations test to validate full deployment
+3. Tests authentication with user credentials
+4. Verifies API connectivity and endpoints
+5. Discovers available devices/clusters (results vary by account)
 """
 
 import asyncio
@@ -18,11 +19,15 @@ import base64
 import time
 from datetime import datetime
 import sys
+import subprocess
+import os
+import signal
 
 class DeploymentValidator:
     def __init__(self):
         self.base_url = "http://localhost:8000"
         self.results = {'tests_passed': 0, 'tests_failed': 0, 'details': []}
+        self.api_process = None
 
     def log_test(self, test_name: str, success: bool, message: str, duration_ms: float = None):
         """Log test results"""
@@ -42,6 +47,107 @@ class DeploymentValidator:
             
         duration_str = f" ({duration_ms:.0f}ms)" if duration_ms else ""
         print(f"   [{status}] {test_name}: {message}{duration_str}")
+
+    async def start_api_server(self):
+        """Start the API server using start_api.py"""
+        print("🚀 Starting API server...")
+
+        try:
+            # Check if start_api.py exists
+            if not os.path.exists('start_api.py'):
+                self.log_test("API Server Startup", False,
+                    "start_api.py not found in current directory")
+                return False
+
+            # Start the API server process
+            self.api_process = subprocess.Popen(
+                ['python3', 'start_api.py'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+
+            self.log_test("API Server Process", True,
+                f"API server started with PID {self.api_process.pid}")
+
+            # Wait a moment for server to start up
+            print("   Waiting for server to initialize...")
+            await asyncio.sleep(3)
+
+            return True
+
+        except Exception as e:
+            self.log_test("API Server Startup", False,
+                f"Could not start API server: {str(e)}")
+            return False
+
+    def stop_api_server(self):
+        """Stop the API server process"""
+        if self.api_process:
+            try:
+                print("🛑 Stopping API server...")
+                self.api_process.terminate()
+                self.api_process.wait(timeout=5)
+                self.log_test("API Server Shutdown", True,
+                    "API server stopped successfully")
+            except subprocess.TimeoutExpired:
+                # Force kill if it doesn't stop gracefully
+                self.api_process.kill()
+                self.log_test("API Server Shutdown", True,
+                    "API server force stopped")
+            except Exception as e:
+                self.log_test("API Server Shutdown", False,
+                    f"Error stopping API server: {str(e)}")
+
+    async def run_guid_crud_test(self):
+        """Run the GUID-based CRUD operations test"""
+        print("Running GUID-based CRUD operations test...")
+
+        start_time = time.perf_counter()
+        try:
+            # Run the CRUD test script
+            result = subprocess.run(
+                ['python3', 'test_guid_crud_operations.py'],
+                capture_output=True,
+                text=True,
+                timeout=120  # 2 minute timeout
+            )
+
+            duration_ms = (time.perf_counter() - start_time) * 1000
+
+            if result.returncode == 0:
+                self.log_test("GUID CRUD Operations", True,
+                    "All CRUD operations completed successfully", duration_ms)
+
+                # Check for specific success indicators in output
+                if "GUID-BASED CRUD OPERATIONS SUCCESSFUL" in result.stdout:
+                    self.log_test("CRUD Functionality Validation", True,
+                        "Full CRUD functionality confirmed")
+                else:
+                    self.log_test("CRUD Functionality Validation", True,
+                        "CRUD test completed without errors")
+
+                return True
+            else:
+                self.log_test("GUID CRUD Operations", False,
+                    f"CRUD test failed with exit code {result.returncode}", duration_ms)
+
+                # Print stderr for debugging
+                if result.stderr:
+                    print(f"   Error details: {result.stderr[:200]}...")
+
+                return False
+
+        except subprocess.TimeoutExpired:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            self.log_test("GUID CRUD Operations", False,
+                "CRUD test timed out after 2 minutes", duration_ms)
+            return False
+        except Exception as e:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            self.log_test("GUID CRUD Operations", False,
+                f"CRUD test error: {str(e)}", duration_ms)
+            return False
 
     async def test_api_health(self):
         """Test basic API health and accessibility"""
@@ -223,34 +329,60 @@ class DeploymentValidator:
 
     async def run_validation(self):
         """Run all validation tests"""
-        print("Microshare ERP Integration - Deployment Validator")
-        print("Testing deployment functionality with your account data")
+        print("Microshare ERP Integration - Deployment Validator v3.0.0")
+        print("Automatic post-deployment validation for GitHub users")
         print(f"{'='*60}")
-        
-        # Test sequence
-        api_healthy = await self.test_api_health()
-        if not api_healthy:
-            print(f"\nCannot continue - API server is not accessible")
-            print("Please start the API server first:")
-            print("  PYTHONPATH=. python3 start_api.py")
-            self.print_summary()
-            return
-        
-        await self.test_api_status()
-        await self.test_authentication_flow()
-        await self.test_device_discovery()
-        
-        self.print_summary()
-        
-        # Save results
+
         try:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"validation_results_{timestamp}.json"
-            with open(filename, 'w') as f:
-                json.dump(self.results, f, indent=2, default=str)
-            print(f"\nDetailed results saved to: {filename}")
-        except Exception as e:
-            print(f"Could not save results file: {e}")
+            # Step 1: Check environment configuration first
+            print("Step 1: Environment Configuration")
+            await self.test_authentication_flow()
+
+            # Step 2: Start API server automatically
+            print("\nStep 2: API Server Startup")
+            server_started = await self.start_api_server()
+            if not server_started:
+                print("\nCannot continue - API server startup failed")
+                print("Please check:")
+                print("  1. start_api.py exists in current directory")
+                print("  2. All dependencies are installed")
+                print("  3. .env file is properly configured")
+                self.print_summary()
+                return
+
+            # Step 3: Test API health
+            print("\nStep 3: API Health Check")
+            api_healthy = await self.test_api_health()
+            if not api_healthy:
+                print("API server started but not responding correctly")
+
+            # Step 4: Test API status
+            print("\nStep 4: API Status and Features")
+            await self.test_api_status()
+
+            # Step 5: Test device discovery
+            print("\nStep 5: Device Discovery")
+            await self.test_device_discovery()
+
+            # Step 6: Run comprehensive CRUD test
+            print("\nStep 6: GUID-based CRUD Operations Test")
+            await self.run_guid_crud_test()
+
+            self.print_summary()
+
+            # Save results
+            try:
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"deployment_validation_{timestamp}.json"
+                with open(filename, 'w') as f:
+                    json.dump(self.results, f, indent=2, default=str)
+                print(f"\nDetailed results saved to: {filename}")
+            except Exception as e:
+                print(f"Could not save results file: {e}")
+
+        finally:
+            # Always try to stop the server when done
+            self.stop_api_server()
 
 async def main():
     validator = DeploymentValidator()

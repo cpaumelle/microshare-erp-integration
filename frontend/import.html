@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microshare ERP Integration - CSV Import</title>
+    <style>
+        /* Import page styling */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: #333;
+            font-size: 20px;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .import-card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .import-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .import-header h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .import-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .upload-section {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            transition: border-color 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .upload-section.drag-over {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .template-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .template-section h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .required-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .field-item {
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .field-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .field-desc {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .preview-section {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .preview-table th,
+        .preview-table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+            font-size: 12px;
+        }
+        
+        .preview-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .error-list {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .error-list h4 {
+            color: #721c24;
+            margin-bottom: 10px;
+        }
+        
+        .error-item {
+            color: #721c24;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .import-card {
+                padding: 20px;
+            }
+            
+            .upload-section {
+                padding: 20px;
+            }
+            
+            .required-fields {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>CSV Import - Microshare ERP Integration</h1>
+            </div>
+            <div class="nav">
+                <a href="/dashboard.html" class="btn btn-primary">← Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Import Instructions -->
+        <div class="import-card">
+            <div class="import-header">
+                <h2>Bulk Device Import</h2>
+                <p>Upload a CSV file to import multiple devices at once</p>
+            </div>
+
+            <!-- Template Download Section -->
+            <div class="template-section">
+                <h3>📋 CSV Template & Requirements</h3>
+                <p>Download the template below or ensure your CSV has these required fields:</p>
+                
+                <div class="required-fields">
+                    <div class="field-item">
+                        <div class="field-name">customer *</div>
+                        <div class="field-desc">Customer/Organization name</div>
+                    </div>
+                    <div class="field-item">
+                        <div class="field-name">site *</div>
+                        <div class="field-desc">Site/Facility name</div>
+                    </div>
+                    <div class="field-item">
+                        <div class="field-name">area *</div>
+                        <div class="field-desc">Area/Zone within site</div>
+                    </div>
+                    <div class="field-item">
+                        <div class="field-name">erp_reference *</div>
+                        <div class="field-desc">ERP system reference (critical)</div>
+                    </div>
+                    <div class="field-item">
+                        <div class="field-name">placement</div>
+                        <div class="field-desc">Internal/External (optional)</div>
+                    </div>
+                    <div class="field-item">
+                        <div class="field-name">configuration</div>
+                        <div class="field-desc">Device config (optional)</div>
+                    </div>
+                    <div class="field-item">
+                        <div class="field-name">device_type</div>
+                        <div class="field-desc">rodent_sensor/gateway (optional)</div>
+                    </div>
+                    <div class="field-item">
+                        <div class="field-name">status</div>
+                        <div class="field-desc">pending/active/inactive (optional)</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 15px;">
+                    <button id="downloadTemplateBtn" class="btn btn-secondary">📥 Download CSV Template</button>
+                </div>
+            </div>
+
+            <!-- Alert Container -->
+            <div id="alertContainer"></div>
+
+            <!-- File Upload Section -->
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-icon">📁</div>
+                <h3>Drop your CSV file here</h3>
+                <p>or <strong>click to browse</strong></p>
+                <input type="file" id="fileInput" class="file-input" accept=".csv" />
+                
+                <div id="fileInfo" class="file-info" style="display: none;">
+                    <strong>Selected:</strong> <span id="fileName"></span><br>
+                    <strong>Size:</strong> <span id="fileSize"></span>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading">
+                <div class="spinner"></div>
+                Processing CSV file...
+            </div>
+
+            <!-- Preview Section -->
+            <div id="previewSection" class="preview-section">
+                <h3>📊 Import Preview</h3>
+                <div id="previewSummary"></div>
+                
+                <table id="previewTable" class="preview-table">
+                    <thead id="previewHeader"></thead>
+                    <tbody id="previewBody"></tbody>
+                </table>
+                
+                <div id="errorList" class="error-list" style="display: none;">
+                    <h4>⚠️ Validation Errors</h4>
+                    <div id="errorItems"></div>
+                </div>
+                
+                <div class="actions">
+                    <button id="cancelImportBtn" class="btn btn-secondary">Cancel</button>
+                    <button id="proceedImportBtn" class="btn btn-success" disabled>
+                        Proceed with Import (Preview Only)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // CSV IMPORT CONTROLLER
+        // ============================================================
+        
+        class CSVImportController {
+            constructor() {
+                this.baseURL = 'http://10.35.1.62:8000';
+                this.sessionToken = localStorage.getItem('microshare_session_token');
+                
+                if (!this.sessionToken) {
+                    window.location.href = '/index.html';
+                    return;
+                }
+                
+                this.initializeEventListeners();
+            }
+            
+            async makeAuthenticatedRequest(url, options = {}) {
+                const headers = {
+                    'Authorization': `Bearer ${this.sessionToken}`,
+                    ...options.headers
+                };
+                
+                try {
+                    const response = await fetch(url, { ...options, headers });
+                    
+                    if (response.status === 401) {
+                        this.showAlert('Session expired. Please log in again.', 'error');
+                        window.location.href = '/index.html';
+                        return null;
+                    }
+                    
+                    return response;
+                } catch (error) {
+                    this.showAlert(`Network error: ${error.message}`, 'error');
+                    return null;
+                }
+            }
+            
+            async downloadTemplate() {
+                try {
+                    const response = await this.makeAuthenticatedRequest(
+                        `${this.baseURL}/api/v1/devices/template`
+                    );
+                    
+                    if (response && response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'microshare_devices_template.csv';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                        
+                        this.showAlert('Template downloaded successfully!', 'success');
+                    } else {
+                        throw new Error('Failed to download template');
+                    }
+                } catch (error) {
+                    this.showAlert(`Download failed: ${error.message}`, 'error');
+                }
+            }
+            
+            async processFile(file) {
+                if (!file) return;
+                
+                if (!file.name.toLowerCase().endsWith('.csv')) {
+                    this.showAlert('Please select a CSV file', 'error');
+                    return;
+                }
+                
+                this.showLoading(true);
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    
+                    const response = await this.makeAuthenticatedRequest(
+                        `${this.baseURL}/api/v1/devices/import`,
+                        {
+                            method: 'POST',
+                            body: formData,
+                            headers: {} // Don't set Content-Type for FormData
+                        }
+                    );
+                    
+                    if (response && response.ok) {
+                        const result = await response.json();
+                        this.showPreview(result);
+                    } else {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || 'Import processing failed');
+                    }
+                } catch (error) {
+                    this.showAlert(`Import failed: ${error.message}`, 'error');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+            
+            showPreview(result) {
+                const previewSection = document.getElementById('previewSection');
+                const previewSummary = document.getElementById('previewSummary');
+                const previewHeader = document.getElementById('previewHeader');
+                const previewBody = document.getElementById('previewBody');
+                const errorList = document.getElementById('errorList');
+                const errorItems = document.getElementById('errorItems');
+                const proceedBtn = document.getElementById('proceedImportBtn');
+
+                // Show preview section
+                previewSection.style.display = 'block';
+
+                // Summary - handle missing properties gracefully
+                const validCount = result.preview ? result.preview.length : 0;
+                const errorCount = result.errors ? result.errors.length : 0;
+                
+                previewSummary.innerHTML = `
+                    <div class="alert alert-info">
+                        <strong>Preview Results:</strong> ${validCount} valid devices, ${errorCount} errors found
+                        <br><small>This is a preview - no devices will be created yet. Full import functionality coming soon!</small>
+                    </div>
+                `;
+                
+                // Preview table
+                if (validCount > 0 && result.preview && result.preview[0]) {
+                    const headers = Object.keys(result.preview[0]);
+                    previewHeader.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
+
+                    previewBody.innerHTML = result.preview.map(device =>
+                        `<tr>${headers.map(h => `<td>${device[h] || ''}</td>`).join('')}</tr>`
+                    ).join('');
+                }
+                
+                // Errors
+                if (errorCount > 0 && result.errors) {
+                    errorList.style.display = 'block';
+                    errorItems.innerHTML = result.errors.map(error =>
+                        `<div class="error-item">${error}</div>`
+                    ).join('');
+                } else {
+                    errorList.style.display = 'none';
+                }
+                
+                // Enable proceed button if there are valid devices
+                proceedBtn.disabled = validCount === 0;
+                
+                this.showAlert(`Preview generated: ${validCount} valid devices ready for import`, 'success');
+            }
+            
+            resetImport() {
+                document.getElementById('fileInput').value = '';
+                document.getElementById('fileInfo').style.display = 'none';
+                document.getElementById('previewSection').style.display = 'none';
+                document.getElementById('alertContainer').innerHTML = '';
+            }
+            
+            showFileInfo(file) {
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileSize').textContent = this.formatFileSize(file.size);
+                document.getElementById('fileInfo').style.display = 'block';
+            }
+            
+            formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+            
+            showLoading(show) {
+                document.getElementById('loadingState').style.display = show ? 'block' : 'none';
+            }
+            
+            showAlert(message, type = 'info') {
+                const alertContainer = document.getElementById('alertContainer');
+                alertContainer.innerHTML = `
+                    <div class="alert alert-${type}">
+                        ${message}
+                    </div>
+                `;
+                
+                if (type === 'success' || type === 'info') {
+                    setTimeout(() => {
+                        alertContainer.innerHTML = '';
+                    }, 5000);
+                }
+            }
+            
+            initializeEventListeners() {
+                const fileInput = document.getElementById('fileInput');
+                const uploadSection = document.getElementById('uploadSection');
+                
+                // Template download
+                document.getElementById('downloadTemplateBtn').addEventListener('click', () => {
+                    this.downloadTemplate();
+                });
+                
+                // File input change
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        this.showFileInfo(file);
+                        this.processFile(file);
+                    }
+                });
+                
+                // Click to browse
+                uploadSection.addEventListener('click', () => {
+                    fileInput.click();
+                });
+                
+                // Drag and drop
+                uploadSection.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadSection.classList.add('drag-over');
+                });
+                
+                uploadSection.addEventListener('dragleave', () => {
+                    uploadSection.classList.remove('drag-over');
+                });
+                
+                uploadSection.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadSection.classList.remove('drag-over');
+                    
+                    const file = e.dataTransfer.files[0];
+                    if (file) {
+                        fileInput.files = e.dataTransfer.files;
+                        this.showFileInfo(file);
+                        this.processFile(file);
+                    }
+                });
+                
+                // Cancel import
+                document.getElementById('cancelImportBtn').addEventListener('click', () => {
+                    this.resetImport();
+                });
+                
+                // Proceed with import (placeholder)
+                document.getElementById('proceedImportBtn').addEventListener('click', () => {
+                    this.showAlert('Full import functionality coming soon! This is currently preview-only.', 'info');
+                });
+            }
+        }
+        
+        // Initialize import controller
+        const importController = new CSVImportController();
+    </script>
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microshare ERP Integration - Login</title>
+    <style>
+        /* Simple, clean styling focused on functionality */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .alert-error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+        }
+        
+        .alert-success {
+            background: #efe;
+            border: 1px solid #cfc;
+            color: #363;
+        }
+        
+        .demo-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .demo-info h4 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>🔗 Microshare ERP</h1>
+            <p>Developer Integration Demo</p>
+        </div>
+        
+        <div id="alert-container"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Microshare Username/Email</label>
+                <input type="email" id="username" name="username" required 
+                       placeholder="Enter your Microshare email">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required 
+                       placeholder="Enter your Microshare password">
+            </div>
+            
+            <div class="form-group">
+                <label for="environment">Environment</label>
+                <select id="environment" name="environment">
+                    <option value="dev">Development (dapi.microshare.io)</option>
+                    <option value="prod">Production (api.microshare.io)</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="login-btn" id="loginBtn">
+                Login to Microshare
+            </button>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                Authenticating with Microshare...
+            </div>
+        </form>
+        
+        <div class="demo-info">
+            <h4>🚀 Demo Features</h4>
+            <ul>
+                <li>Canonical web app authentication</li>
+                <li>Device & gateway management</li>
+                <li>CSV import/export functionality</li>
+                <li>Search and filtering</li>
+                <li>Developer-friendly patterns</li>
+            </ul>
+            
+            <h4 style="margin-top: 15px;">🔧 For Developers</h4>
+            <p>This demo shows the working authentication and CRUD patterns for Microshare ERP integration. View source code to see the implementation patterns.</p>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // CANONICAL AUTHENTICATION PATTERNS (from optimized tester)
+        // ============================================================
+        
+        class MicroshareAPIClient {
+            constructor() {
+                this.baseURL = 'http://10.35.1.62:8000';
+                this.sessionToken = localStorage.getItem('microshare_session_token');
+            }
+            
+            // Show alert messages
+            showAlert(message, type = 'error') {
+                const alertContainer = document.getElementById('alert-container');
+                alertContainer.innerHTML = `
+                    <div class="alert alert-${type}">
+                        ${message}
+                    </div>
+                `;
+                
+                // Auto-hide success messages
+                if (type === 'success') {
+                    setTimeout(() => {
+                        alertContainer.innerHTML = '';
+                    }, 3000);
+                }
+            }
+            
+            // Show/hide loading state
+            setLoading(loading) {
+                const loginBtn = document.getElementById('loginBtn');
+                const loadingDiv = document.getElementById('loading');
+                
+                if (loading) {
+                    loginBtn.disabled = true;
+                    loginBtn.textContent = 'Authenticating...';
+                    loadingDiv.style.display = 'block';
+                } else {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Login to Microshare';
+                    loadingDiv.style.display = 'none';
+                }
+            }
+            
+            // Canonical authentication method
+            async authenticate(username, password, environment) {
+                try {
+                    this.setLoading(true);
+                    this.showAlert('Connecting to Microshare ' + environment + ' environment...', 'success');
+                    
+                    const response = await fetch(`${this.baseURL}/api/v1/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username: username,
+                            password: password,
+                            environment: environment
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok && result.success) {
+                        // Store session token
+                        localStorage.setItem('microshare_session_token', result.session_token);
+                        localStorage.setItem('user_info', JSON.stringify(result.user_info));
+                        localStorage.setItem('api_base', result.api_base);
+                        
+                        this.showAlert(`Authentication successful! Redirecting to dashboard...`, 'success');
+                        
+                        // Redirect to dashboard after short delay
+                        setTimeout(() => {
+                            window.location.href = '/dashboard.html';
+                        }, 1500);
+                        
+                        return result;
+                    } else {
+                        throw new Error(result.detail || 'Authentication failed');
+                    }
+                } catch (error) {
+                    this.showAlert(`Authentication failed: ${error.message}`, 'error');
+                    throw error;
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+            
+            // Check if user is already logged in
+            isAuthenticated() {
+                return !!this.sessionToken;
+            }
+            
+            // Get stored user info
+            getUserInfo() {
+                const userInfo = localStorage.getItem('user_info');
+                return userInfo ? JSON.parse(userInfo) : null;
+            }
+        }
+        
+        // Initialize API client
+        const apiClient = new MicroshareAPIClient();
+        
+        // Check if already authenticated
+        if (apiClient.isAuthenticated()) {
+            const userInfo = apiClient.getUserInfo();
+            if (userInfo) {
+                apiClient.showAlert(`Already logged in as ${userInfo.username}. Redirecting...`, 'success');
+                setTimeout(() => {
+                    window.location.href = '/dashboard.html';
+                }, 1000);
+            }
+        }
+        
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const environment = document.getElementById('environment').value;
+            
+            if (!username || !password) {
+                apiClient.showAlert('Please enter both username and password', 'error');
+                return;
+            }
+            
+            try {
+                await apiClient.authenticate(username, password, environment);
+            } catch (error) {
+                console.error('Login failed:', error);
+                // Error already shown by authenticate method
+            }
+        });
+        
+        // Development helper - prefill demo credentials
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can uncomment these for demo purposes
+            // document.getElementById('username').value = 'cp_erp_sample@maildrop.cc';
+            // document.getElementById('password').value = 'AVH7dbz!brt-rfn0tdk';
+        });
+    </script>
+</body>
+</html>

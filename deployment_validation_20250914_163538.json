@@ -1,0 +1,48 @@
+{
+  "tests_passed": 5,
+  "tests_failed": 2,
+  "details": [
+    {
+      "test": "Environment Configuration",
+      "status": "PASS",
+      "message": "All required environment variables are configured",
+      "duration_ms": null
+    },
+    {
+      "test": "Credential Configuration",
+      "status": "PASS",
+      "message": "Credentials appear to be configured (not placeholder values)",
+      "duration_ms": null
+    },
+    {
+      "test": "API Server Process",
+      "status": "PASS",
+      "message": "API server started with PID 2653",
+      "duration_ms": null
+    },
+    {
+      "test": "API Health Check",
+      "status": "PASS",
+      "message": "API is running - microshare-erp-integration",
+      "duration_ms": 79.52945699980773
+    },
+    {
+      "test": "API Status",
+      "status": "PASS",
+      "message": "API operational with 0 features configured",
+      "duration_ms": 38.76729300009174
+    },
+    {
+      "test": "Device Discovery",
+      "status": "FAIL",
+      "message": "Discovery failed with HTTP 404",
+      "duration_ms": 33.410275999813166
+    },
+    {
+      "test": "GUID CRUD Operations",
+      "status": "FAIL",
+      "message": "CRUD test failed with exit code 1",
+      "duration_ms": 198.08399899920914
+    }
+  ]
+}

@@ -17,6 +17,8 @@ class MicroshareAPITester:
         self.base_url = base_url
         self.session = requests.Session()
         self.test_results = []
+        self.session_token = None
+        self.authenticated = False
 
     def log_test(self, test_name: str, passed: bool, details: str = ""):
         """Log test results"""
@@ -24,20 +26,44 @@ class MicroshareAPITester:
         self.test_results.append((test_name, status, details))
         print(f"{test_name:<30} {status} {details}")
 
-    def test_health_check(self):
-        """Test basic health endpoints"""
-        print("\n🏥 HEALTH CHECKS")
+    def test_authentication(self):
+        """Test authentication with .env credentials"""
+        print("\n🔐 AUTHENTICATION")
         print("-" * 50)
 
         try:
-            response = self.session.get(f"{self.base_url}/api/v1/health", timeout=5)
-            self.log_test("Basic Health", response.status_code == 200, f"{response.status_code}")
+            # Test auth status endpoint first
+            response = self.session.get(f"{self.base_url}/api/v1/auth/status", timeout=5)
+            self.log_test("Auth Endpoint", response.status_code in [200, 401], f"{response.status_code}")
 
-            response = self.session.get(f"{self.base_url}/api/v1/health/cache", timeout=5)
-            self.log_test("Cache Health", response.status_code == 200, f"{response.status_code}")
+            # Login with .env credentials
+            login_data = {
+                "username": "cp_erp_sample@maildrop.cc",
+                "password": "AVH7dbz!brt-rfn0tdk",
+                "environment": "dev"
+            }
+
+            response = self.session.post(f"{self.base_url}/api/v1/auth/login", json=login_data, timeout=10)
+
+            if response.status_code == 200:
+                auth_data = response.json()
+                if auth_data.get('success'):
+                    self.session_token = auth_data.get('session_token') or auth_data.get('access_token')
+                    # Set Authorization header for future requests
+                    self.session.headers.update({'Authorization': f'Bearer {self.session_token}'})
+                    self.authenticated = True
+                    self.log_test("Login Success", True, f"Token: {self.session_token[:16]}...")
+                    return True
+                else:
+                    self.log_test("Login Failed", False, auth_data.get('detail', 'Unknown error'))
+            else:
+                self.log_test("Login Failed", False, f"HTTP {response.status_code}")
+
+            return False
 
         except Exception as e:
-            self.log_test("Health Checks", False, str(e)[:50])
+            self.log_test("Authentication", False, str(e)[:50])
+            return False
 
     def test_read_operations(self):
         """Test all read operations and cache performance"""
@@ -265,7 +291,10 @@ class MicroshareAPITester:
         self.test_device_id = None
 
         # Run test sequence
-        self.test_health_check()
+        if not self.test_authentication():
+            print("❌ Authentication failed, skipping remaining tests")
+            return False
+
         self.test_read_operations()
         self.test_create_operation()
         self.test_update_operation()
@@ -273,7 +302,7 @@ class MicroshareAPITester:
         self.test_cache_invalidation()
 
         # Print summary
-        self.print_summary()
+        return self.print_summary()
 
     def print_summary(self):
         """Print test summary"""
@@ -311,14 +340,14 @@ def main():
 
     # Check if server is running
     try:
-        response = requests.get(f"{BASE_URL}/api/v1/health", timeout=5)
+        response = requests.get(f"{BASE_URL}/docs", timeout=5)
         if response.status_code != 200:
             print(f"❌ Server not responding at {BASE_URL}")
-            print("Make sure to start the API first: python3 startup.py")
+            print("Make sure to start the API first: python3 start_api.py")
             sys.exit(1)
     except Exception as e:
         print(f"❌ Cannot connect to server at {BASE_URL}")
-        print("Make sure to start the API first: python3 startup.py")
+        print("Make sure to start the API first: python3 start_api.py")
         sys.exit(1)
 
     # Run tests

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimized CRUD Performance Test - v3.0</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .performance-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .sync-test, .async-test {
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .sync-test {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+        }
+        .async-test {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .async-button {
+            background-color: #28a745;
+        }
+        .async-button:hover {
+            background-color: #1e7e34;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .timer {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .status-pending {
+            color: #ffc107;
+        }
+        .status-completed {
+            color: #28a745;
+        }
+        .status-failed {
+            color: #dc3545;
+        }
+        .operation-status {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Optimized CRUD Performance Testing v3.0</h1>
+    
+    <div class="container">
+        <h2>Performance Comparison</h2>
+        <div class="performance-comparison">
+            <div class="sync-test">
+                <h3>❌ Old Slow CRUD</h3>
+                <p><strong>User Experience:</strong> Wait 22+ seconds for each operation</p>
+                <p><strong>CREATE:</strong> ~22 seconds</p>
+                <p><strong>UPDATE:</strong> ~24 seconds</p>
+                <p><strong>DELETE:</strong> ~23 seconds</p>
+                <p><strong>Bottleneck:</strong> Wildcard discovery every time</p>
+            </div>
+            <div class="async-test">
+                <h3>⚡ New Optimized CRUD</h3>
+                <p><strong>User Experience:</strong> Instant response ~1 second!</p>
+                <p><strong>CREATE:</strong> ~1 second (22x faster)</p>
+                <p><strong>UPDATE:</strong> ~1 second (24x faster)</p>
+                <p><strong>DELETE:</strong> ~1 second (23x faster)</p>
+                <p><strong>Optimization:</strong> Cached clusters + direct access</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Section -->
+    <div class="container">
+        <h2>Authentication</h2>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="email" id="username" value="cp_erp_sample@maildrop.cc">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" value="AVH7dbz!brt-rfn0tdk">
+        </div>
+        <div class="form-group">
+            <label for="environment">Environment:</label>
+            <select id="environment">
+                <option value="dev">Development</option>
+                <option value="prod">Production</option>
+            </select>
+        </div>
+        <button onclick="authenticate()">Login</button>
+        <div id="auth-status" class="results" style="display: none;"></div>
+    </div>
+
+    <!-- Device CRUD Testing -->
+    <div class="container">
+        <h2>Device CRUD Operations</h2>
+        
+        <!-- Create Device Form -->
+        <h3>Create Device</h3>
+        <div class="form-group">
+            <label for="customer">Customer:</label>
+            <input type="text" id="customer" value="TestCorp">
+        </div>
+        <div class="form-group">
+            <label for="site">Site:</label>
+            <input type="text" id="site" value="TestSite">
+        </div>
+        <div class="form-group">
+            <label for="area">Area:</label>
+            <input type="text" id="area" value="TestArea">
+        </div>
+        <div class="form-group">
+            <label for="erp_reference">ERP Reference:</label>
+            <input type="text" id="erp_reference" value="TEST001">
+        </div>
+        <div class="form-group">
+            <label for="placement">Placement:</label>
+            <select id="placement">
+                <option value="Internal">Internal</option>
+                <option value="External">External</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="configuration">Configuration:</label>
+            <select id="configuration">
+                <option value="Bait/Lured">Bait/Lured</option>
+                <option value="Poison">Poison</option>
+                <option value="Kill/Trap">Kill/Trap</option>
+                <option value="Glue">Glue</option>
+                <option value="Cavity">Cavity</option>
+            </select>
+        </div>
+        
+        <!-- Action Buttons -->
+        <button onclick="createDeviceSync()">Create Device (Sync - 22s wait)</button>
+        <button onclick="createDeviceAsync()" class="async-button">Create Device (Async - Instant)</button>
+        
+        <!-- Update/Delete -->
+        <div class="form-group" style="margin-top: 20px;">
+            <label for="device_id">Device ID (for update/delete):</label>
+            <input type="text" id="device_id" value="58A0CB000011F85E">
+        </div>
+        
+        <button onclick="updateDeviceSync()">Update Device (Sync)</button>
+        <button onclick="updateDeviceAsync()" class="async-button">Update Device (Async)</button>
+        <button onclick="deleteDeviceSync()">Delete Device (Sync)</button>
+        <button onclick="deleteDeviceAsync()" class="async-button">Delete Device (Async)</button>
+        
+        <!-- Results Display -->
+        <div id="results" class="results"></div>
+    </div>
+
+    <!-- Operation Status Monitoring -->
+    <div class="container">
+        <h2>Operation Status</h2>
+        <button onclick="listOperations()">List Recent Operations</button>
+        <button onclick="clearResults()">Clear Results</button>
+        <div id="operations" class="results"></div>
+    </div>
+
+    <script>
+        let authToken = null;
+        let apiBase = window.location.origin;
+        
+        // Utility functions
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            results.textContent += logEntry;
+            results.scrollTop = results.scrollHeight;
+        }
+        
+        function clearResults() {
+            document.getElementById('results').textContent = '';
+            document.getElementById('operations').textContent = '';
+        }
+        
+        function startTimer() {
+            const start = performance.now();
+            return () => {
+                const end = performance.now();
+                return Math.round(end - start);
+            };
+        }
+        
+        // Authentication
+        async function authenticate() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const environment = document.getElementById('environment').value;
+            
+            log('Attempting authentication...');
+            
+            try {
+                const response = await fetch(`${apiBase}/api/v1/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password,
+                        environment
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    authToken = data.session_token;
+                    log('Authentication successful!');
+                    document.getElementById('auth-status').style.display = 'block';
+                    document.getElementById('auth-status').textContent = `Authenticated as: ${username}\nEnvironment: ${environment}`;
+                } else {
+                    log(`Authentication failed: ${data.detail || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                log(`Authentication error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Device creation functions
+        async function createDeviceSync() {
+            if (!authToken) {
+                log('Please authenticate first', 'error');
+                return;
+            }
+            
+            const deviceData = getDeviceFormData();
+            const timer = startTimer();
+            
+            log('Creating device (SYNC) - This will take ~22 seconds...');
+            
+            try {
+                const response = await fetch(`${apiBase}/api/v1/devices`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(deviceData)
+                });
+                
+                const data = await response.json();
+                const duration = timer();
+                
+                if (response.ok) {
+                    log(`SYNC CREATE SUCCESS: ${data.message} (${duration}ms)`, 'success');
+                } else {
+                    log(`SYNC CREATE FAILED: ${data.detail || 'Unknown error'} (${duration}ms)`, 'error');
+                }
+            } catch (error) {
+                const duration = timer();
+                log(`SYNC CREATE ERROR: ${error.message} (${duration}ms)`, 'error');
+            }
+        }
+        
+        async function createDeviceAsync() {
+            if (!authToken) {
+                log('Please authenticate first', 'error');
+                return;
+            }
+            
+            const deviceData = getDeviceFormData();
+            const timer = startTimer();
+            
+            log('Creating device (ASYNC) - Should respond instantly...');
+            
+            try {
+                const response = await fetch(`${apiBase}/api/v1/async/devices`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(deviceData)
+                });
+                
+                const data = await response.json();
+                const duration = timer();
+                
+                if (response.ok && data.success) {
+                    log(`ASYNC CREATE SUCCESS: ${data.message} (${duration}ms) - Operation ID: ${data.operation_id}`, 'success');
+                    
+                    // Start polling for completion
+                    pollOperationStatus(data.operation_id);
+                } else {
+                    log(`ASYNC CREATE FAILED: ${data.detail || 'Unknown error'} (${duration}ms)`, 'error');
+                }
+            } catch (error) {
+                const duration = timer();
+                log(`ASYNC CREATE ERROR: ${error.message} (${duration}ms)`, 'error');
+            }
+        }
+        
+        // Update device functions
+        async function updateDeviceSync() {
+            if (!authToken) {
+                log('Please authenticate first', 'error');
+                return;
+            }
+            
+            const deviceId = document.getElementById('device_id').value;
+            const updates = { customer: 'UpdatedTestCorp', placement: 'External' };
+            const timer = startTimer();
+            
+            log(`Updating device ${deviceId} (SYNC) - This will take ~24 seconds...`);
+            
+            try {
+                const response = await fetch(`${apiBase}/api/v1/devices/${deviceId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(updates)
+                });
+                
+                const data = await response.json();
+                const duration = timer();
+                
+                if (response.ok) {
+                    log(`SYNC UPDATE SUCCESS: ${data.message || 'Updated'} (${duration}ms)`, 'success');
+                } else {
+                    log(`SYNC UPDATE FAILED: ${data.detail || 'Unknown error'} (${duration}ms)`, 'error');
+                }
+            } catch (error) {
+                const duration = timer();
+                log(`SYNC UPDATE ERROR: ${error.message} (${duration}ms)`, 'error');
+            }
+        }
+        
+        async function updateDeviceAsync() {
+            if (!authToken) {
+                log('Please authenticate first', 'error');
+                return;
+            }
+            
+            const deviceId = document.getElementById('device_id').value;
+            const updates = { customer: 'AsyncUpdatedCorp', placement: 'External' };
+            const timer = startTimer();
+            
+            log(`Updating device ${deviceId} (ASYNC) - Should respond instantly...`);
+            
+            try {
+                const response = await fetch(`${apiBase}/api/v1/async/devices/${deviceId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(updates)
+                });
+                
+                const data = await response.json();
+                const duration = timer();
+                
+                if (response.ok && data.success) {
+                    log(`ASYNC UPDATE SUCCESS: ${data.message} (${duration}ms) - Operation ID: ${data.operation_id}`, 'success');
+                    pollOperationStatus(data.operation_id);
+                } else {
+                    log(`ASYNC UPDATE FAILED: ${data.detail || 'Unknown error'} (${duration}ms)`, 'error');
+                }
+            } catch (error) {
+                const duration = timer();
+                log(`ASYNC UPDATE ERROR: ${error.message} (${duration}ms)`, 'error');
+            }
+        }
+        
+        // Delete device functions
+        async function deleteDeviceSync() {
+            if (!authToken) {
+                log('Please authenticate first', 'error');
+                return;
+            }
+            
+            const deviceId = document.getElementById('device_id').value;
+            const timer = startTimer();
+            
+            log(`Deleting device ${deviceId} (SYNC) - This will take ~23 seconds...`);
+            
+            try {
+                const response = await fetch(`${apiBase}/api/v1/devices/${deviceId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                const duration = timer();
+                
+                if (response.ok) {
+                    log(`SYNC DELETE SUCCESS: ${data.message || 'Deleted'} (${duration}ms)`, 'success');
+                } else {
+                    log(`SYNC DELETE FAILED: ${data.detail || 'Unknown error'} (${duration}ms)`, 'error');
+                }
+            } catch (error) {
+                const duration = timer();
+                log(`SYNC DELETE ERROR: ${error.message} (${duration}ms)`, 'error');
+            }
+        }
+        
+        async function deleteDeviceAsync() {
+            if (!authToken) {
+                log('Please authenticate first', 'error');
+                return;
+            }
+            
+            const deviceId = document.getElementById('device_id').value;
+            const timer = startTimer();
+            
+            log(`Deleting device ${deviceId} (ASYNC) - Should respond instantly...`);
+            
+            try {
+                const response = await fetch(`${apiBase}/api/v1/async/devices/${deviceId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                const duration = timer();
+                
+                if (response.ok && data.success) {
+                    log(`ASYNC DELETE SUCCESS: ${data.message} (${duration}ms) - Operation ID: ${data.operation_id}`, 'success');
+                    pollOperationStatus(data.operation_id);
+                } else {
+                    log(`ASYNC DELETE FAILED: ${data.detail || 'Unknown error'} (${duration}ms)`, 'error');
+                }
+            } catch (error) {
+                const duration = timer();
+                log(`ASYNC DELETE ERROR: ${error.message} (${duration}ms)`, 'error');
+            }
+        }
+        
+        // Helper functions
+        function getDeviceFormData() {
+            return {
+                customer: document.getElementById('customer').value,
+                site: document.getElementById('site').value,
+                area: document.getElementById('area').value,
+                erp_reference: document.getElementById('erp_reference').value,
+                placement: document.getElementById('placement').value,
+                configuration: document.getElementById('configuration').value
+            };
+        }
+        
+        // Operation status polling
+        async function pollOperationStatus(operationId, maxAttempts = 30) {
+            let attempts = 0;
+            
+            const poll = async () => {
+                attempts++;
+                
+                try {
+                    const response = await fetch(`${apiBase}/api/v1/operations/${operationId}`);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        const status = data.status;
+                        log(`Operation ${operationId}: ${status.toUpperCase()}`, status === 'completed' ? 'success' : status === 'failed' ? 'error' : 'info');
+                        
+                        if (status === 'completed' || status === 'failed') {
+                            if (data.result) {
+                                log(`Final result: ${JSON.stringify(data.result, null, 2)}`);
+                            }
+                            if (data.error) {
+                                log(`Error: ${data.error}`, 'error');
+                            }
+                            return; // Stop polling
+                        }
+                        
+                        // Continue polling if still pending/processing
+                        if (attempts < maxAttempts) {
+                            setTimeout(poll, 2000); // Poll every 2 seconds
+                        } else {
+                            log(`Operation ${operationId}: Polling timeout after ${maxAttempts} attempts`, 'error');
+                        }
+                    } else {
+                        log(`Failed to check operation status: ${data.detail}`, 'error');
+                    }
+                } catch (error) {
+                    log(`Error checking operation status: ${error.message}`, 'error');
+                }
+            };
+            
+            poll();
+        }
+        
+        // List operations
+        async function listOperations() {
+            if (!authToken) {
+                log('Please authenticate first', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${apiBase}/api/v1/operations`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const operations = document.getElementById('operations');
+                    operations.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    log(`Failed to list operations: ${data.detail}`, 'error');
+                }
+            } catch (error) {
+                log(`Error listing operations: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

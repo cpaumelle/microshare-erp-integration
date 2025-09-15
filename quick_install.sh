@@ -1,9 +1,9 @@
 #!/bin/bash
-# Microshare ERP Integration v2.0 - Enhanced Installer
+# Microshare ERP Integration v3.0 - Enhanced Installer
 
 set -e
 
-echo "🚀 Installing Microshare ERP Integration v2.0..."
+echo "🚀 Installing Microshare ERP Integration v3.0..."
 
 # Install dependencies (including pydantic-settings)
 python3 -m pip install -r requirements.txt pydantic-settings --break-system-packages
@@ -74,14 +74,14 @@ if [ "$next_choice" = "2" ]; then
     sleep 5
     echo ""
     echo "🧪 Running deployment validation..."
-    python3 validate_deployment.py
+    python3 scripts/validate_deployment.py
     echo ""
     echo "✅ Validation complete!"
     echo "🛑 To stop the server: kill $SERVER_PID"
 elif [ "$next_choice" = "3" ]; then
     echo "🧪 Running deployment validation..."
     echo "Note: Make sure API server is running on port 8000"
-    python3 validate_deployment.py
+    python3 scripts/validate_deployment.py
 else
     echo "🚀 Start the API with: PYTHONPATH=. python3 start_api.py"
 fi

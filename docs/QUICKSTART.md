@@ -11,17 +11,20 @@ Get the Microshare ERP Integration sample running in 5 minutes.
 ## Installation
 
 ```bash
-# Clone repository
-git clone https://github.com/cpaumelle/microshare-erp-integration.git
+# Clone repository (use v3.0-github-ready for latest fixes)
+git clone -b v3.0-github-ready https://github.com/cpaumelle/microshare-erp-integration.git
 cd microshare-erp-integration
 
 # Use demo credentials
 cp .env.example .env
 
 # Install dependencies
-python3 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt --break-system-packages
 
-# Start the API
+# Start server + run validation (recommended)
+PYTHONPATH=. python3 start_and_validate.py
+
+# Or start server only
 PYTHONPATH=. python3 start_api.py
 ```
 

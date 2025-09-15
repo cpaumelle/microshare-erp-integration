@@ -14,13 +14,25 @@ This sample provides:
 ## Quick Start
 
 ```bash
-# Clone and setup
-git clone https://github.com/cpaumelle/microshare-erp-integration.git
+# Clone and setup (use v3.0-github-ready branch for latest fixes)
+git clone -b v3.0-github-ready https://github.com/cpaumelle/microshare-erp-integration.git
 cd microshare-erp-integration
 cp .env.example .env  # Demo credentials included
 
-# Install and run
-python3 -m pip install -r requirements.txt
+# Install dependencies
+python3 -m pip install -r requirements.txt --break-system-packages
+
+# 🚀 RECOMMENDED: Start server + run validation automatically
+PYTHONPATH=. python3 start_and_validate.py
+```
+
+**Alternative startup methods:**
+```bash
+# Manual background + validation
+PYTHONPATH=. python3 start_api.py &
+python3 scripts/validate_deployment.py
+
+# Server only (foreground - requires 2nd terminal for validation)
 PYTHONPATH=. python3 start_api.py
 ```
 

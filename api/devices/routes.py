@@ -18,7 +18,7 @@ from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, Request
 from typing import Dict, Any, List, Optional
 
 # Import optimized modules
-from .optimized_crud import FastCRUDManager, FastDeviceCreate
+from .crud import FastCRUDManager, FastDeviceCreate
 from .enhanced_cache_manager import (
     smart_cache,
     update_cache_after_create,
@@ -28,7 +28,7 @@ from .enhanced_cache_manager import (
 )
 
 # Import authentication (keep existing patterns)
-from api.auth.canonical_auth import get_current_auth
+from api.auth.auth import get_current_auth
 from pydantic import BaseModel
 from typing import Dict, Any
 
@@ -50,9 +50,9 @@ def get_auth_data(auth_dict: Dict = None) -> AuthData:
     )
 
 # Import existing models for compatibility
-from .canonical_operations import DevicesResponse
+from .operations import DevicesResponse
 # Import from canonical operations instead
-from .canonical_operations import get_devices
+from .operations import get_devices
 
 async def optimized_get_devices(access_token: str, api_base: str) -> dict:
     """
@@ -60,7 +60,7 @@ async def optimized_get_devices(access_token: str, api_base: str) -> dict:
 
     This eliminates the cache conflict and ensures consistent ~1 second performance
     """
-    from .optimized_crud import FastCRUDManager
+    from .crud import FastCRUDManager
 
     cache = FastCRUDManager._cluster_cache
     current_time = time.time()
@@ -72,8 +72,8 @@ async def optimized_get_devices(access_token: str, api_base: str) -> dict:
         erp_ready_count = 0
 
         for cluster_id, cluster_info in cache['data'].items():
-            # Use proper device processing from canonical_operations
-            from .canonical_operations import OptimizedDeviceManager
+            # Use proper device processing from operations
+            from .operations import OptimizedDeviceManager
 
             cluster_result = await OptimizedDeviceManager.get_cluster_devices(
                 cluster_info, access_token, api_base
@@ -113,7 +113,7 @@ async def optimized_get_devices(access_token: str, api_base: str) -> dict:
         }
 
     # Fallback: Cache is empty, populate it once
-    from .canonical_operations import OptimizedDeviceManager
+    from .operations import OptimizedDeviceManager
 
     discovery_result = await OptimizedDeviceManager.wildcard_discovery_with_cache(
         access_token, api_base
@@ -129,8 +129,8 @@ async def optimized_get_devices(access_token: str, api_base: str) -> dict:
         erp_ready_count = 0
 
         for cluster_id, cluster_info in discovery_result['cluster_map'].items():
-            # Use proper device processing from canonical_operations
-            from .canonical_operations import OptimizedDeviceManager
+            # Use proper device processing from operations
+            from .operations import OptimizedDeviceManager
             cluster_result = await OptimizedDeviceManager.get_cluster_devices(
                 cluster_info, access_token, api_base
             )
@@ -171,7 +171,7 @@ router = APIRouter(prefix="/api/v1/devices", tags=["devices-optimized"])
 @router.get("/test")
 async def test_route():
     """Test route to verify router is working"""
-    return {"status": "router working", "message": "optimized_routes is properly loaded"}
+    return {"status": "router working", "message": "routes is properly loaded"}
 
 @router.get("/debug")
 async def debug_devices(request: Request):
@@ -304,7 +304,7 @@ async def update_device_optimized(
         start_time = time.time()
 
         # Import the GUID-based update method
-        from .canonical_operations import update_device_by_guid
+        from .operations import update_device_by_guid
 
         # Use GUID-based update (device_id parameter is actually a GUID from frontend)
         result = await update_device_by_guid(
@@ -357,7 +357,7 @@ async def delete_device_optimized(
         start_time = time.time()
 
         # Import the GUID-based delete method
-        from .canonical_operations import delete_device_by_guid
+        from .operations import delete_device_by_guid
 
         # Use GUID-based deletion (device_id parameter is actually a GUID from frontend)
         result = await delete_device_by_guid(
@@ -495,7 +495,7 @@ async def health_check():
     """Health check for optimized device operations"""
     return {
         'status': 'healthy',
-        'router': 'optimized_routes v1.0.0',
+        'router': 'routes v1.0.0',
         'features': [
             'FastCRUDManager for 22-24x performance improvement',
             'SmartCacheManager for surgical cache updates',

@@ -1,5 +1,5 @@
-# Microshare ERP Integration v2.0 - Clean Dependencies
-# Version: 2.0.0
+# Microshare ERP Integration v3.0 - Clean Dependencies
+# Version: 3.0.0
 # FastAPI Core
 fastapi>=0.104.0
 uvicorn[standard]>=0.24.0

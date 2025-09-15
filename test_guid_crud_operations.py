@@ -7,7 +7,7 @@ Authors: Debug Team
 
 Changelog:
 - Fixed authentication using proven web app login pattern
-- Uses JWT session cookie extraction like optimized_performance_testing.py
+- Uses JWT session cookie extraction like performance_testing.py
 - Tests GUID-based UPDATE and DELETE methods
 - Includes comprehensive error handling and debugging
 """

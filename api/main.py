@@ -1,7 +1,7 @@
 """
-Microshare ERP Integration v3.0.0 - Performance Optimized
-High-performance API with 45x faster CRUD operations
-Version: 3.0.0 - Optimized with FastCRUDManager
+Microshare ERP Integration v3.0.0
+ERP Integration API with FastCRUDManager
+Version: 3.0.0
 Last Updated: 2025-09-14 07:35:00 UTC
 """
 from fastapi import FastAPI, HTTPException
@@ -13,8 +13,8 @@ from datetime import datetime
 
 # Import only essential optimized modules
 from api.config.settings import settings
-from api.auth.canonical_auth import router as auth_router
-from api.devices.optimized_routes import router as device_router
+from api.auth.auth import router as auth_router
+from api.devices.routes import router as device_router
 
 # Configure logging
 logging.basicConfig(
@@ -25,9 +25,9 @@ logger = logging.getLogger(__name__)
 
 # Create FastAPI application
 app = FastAPI(
-    title="Microshare ERP Integration API - Optimized",
-    description="High-performance API with 45x faster CRUD operations using FastCRUDManager",
-    version="3.0.0-optimized",
+    title="Microshare ERP Integration API",
+    description="ERP Integration API using FastCRUDManager",
+    version="3.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
 )
@@ -62,19 +62,13 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "microshare-erp-integration",
-        "version": "3.0.0-optimized",
+        "version": "3.0.0",
         "timestamp": datetime.now().isoformat(),
-        "performance": {
-            "optimization": "FastCRUDManager with 45x performance improvement",
-            "CREATE": "~1 second (was 22s)",
-            "UPDATE": "~1 second (was 23s)",
-            "DELETE": "~1 second (was 22s)",
-            "cache_strategy": "Smart cache with surgical updates"
-        },
+        "cache_strategy": "Smart cache with surgical updates",
         "features": {
-            "optimized_crud": True,
+            "crud": True,
             "smart_cache": True,
-            "canonical_authentication": True,
+            "authentication": True,
             "frontend_demo": True
         }
     }
@@ -84,22 +78,22 @@ async def api_status():
     """Enhanced API status with performance metrics"""
     return {
         "status": "running",
-        "version": "3.0.0-optimized",
-        "performance_tier": "OPTIMIZED",
+        "version": "3.0.0",
+        "performance_tier": "PRODUCTION",
         "endpoints": {
-            "devices": "available at /api/v1/devices/ (optimized routes)",
+            "devices": "available at /api/v1/devices/",
             "auth": "available at /api/v1/auth/login",
             "frontend": "available at /",
             "performance": "available at /api/v1/devices/performance/benchmark"
         },
-        "optimization_details": {
+        "system_details": {
             "crud_manager": "FastCRUDManager",
             "cache_manager": "SmartCacheManager",
-            "discovery_elimination": "Uses cached cluster mapping",
-            "cache_updates": "Surgical instead of clearing"
+            "discovery_pattern": "Uses cached cluster mapping",
+            "cache_updates": "Surgical updates"
         },
         "authentication": {
-            "canonical_login": "/api/v1/auth/login",
+            "login": "/api/v1/auth/login",
             "working_credentials": "cp_erp_sample@maildrop.cc"
         }
     }

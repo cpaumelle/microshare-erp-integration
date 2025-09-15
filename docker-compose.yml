@@ -1,7 +1,7 @@
 services:
   microshare-api:
-    build: 
-      context: ./services/integration-api
+    build:
+      context: .
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
@@ -10,9 +10,13 @@ services:
       - MICROSHARE_API_URL=${MICROSHARE_API_URL:-https://dapi.microshare.io}
       - MICROSHARE_USERNAME=${MICROSHARE_USERNAME}
       - MICROSHARE_PASSWORD=${MICROSHARE_PASSWORD}
-      - MICROSHARE_API_KEY=${MICROSHARE_API_KEY}
       - DEVICE_RECORD_TYPE=${DEVICE_RECORD_TYPE:-io.microshare.trap.packed}
+      - GATEWAY_RECORD_TYPE=${GATEWAY_RECORD_TYPE:-io.microshare.gateway.health.packed}
       - INCIDENT_RECORD_TYPE=${INCIDENT_RECORD_TYPE:-io.microshare.demo.sensor.unpacked}
+      - API_HOST=${API_HOST:-0.0.0.0}
+      - API_PORT=${API_PORT:-8000}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - DEBUG=${DEBUG:-false}
       - CACHE_TTL=${CACHE_TTL:-300}
       - API_TIMEOUT=${API_TIMEOUT:-30}
     volumes:
@@ -27,17 +31,6 @@ services:
       start_period: 40s
     networks:
       - microshare-network
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - microshare-api
-    networks:
-      - microshare-network
-    profiles:
-      - frontend
 
 networks:
   microshare-network:

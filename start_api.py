@@ -8,5 +8,5 @@ import uvicorn
 from api.config.settings import settings
 
 if __name__ == "__main__":
-    print("Starting Microshare ERP Integration v2.0...")
+    print("Starting Microshare ERP Integration v3.0...")
     uvicorn.run(app, host=settings.api_host, port=settings.api_port, reload=settings.debug)

@@ -47,7 +47,10 @@ cp .env.example .env
 # Install dependencies
 python3 -m pip install -r requirements.txt --break-system-packages
 
-# Start the API server
+# Start server + validate automatically (recommended for testing)
+PYTHONPATH=. python3 start_and_validate.py
+
+# Or start server only
 PYTHONPATH=. python3 start_api.py
 ```
 

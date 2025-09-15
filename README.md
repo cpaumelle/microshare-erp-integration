@@ -19,8 +19,13 @@ git clone -b v3.0-github-ready https://github.com/cpaumelle/microshare-erp-integ
 cd microshare-erp-integration
 cp .env.example .env  # Demo credentials included
 
-# Install and run
+# Install dependencies
 python3 -m pip install -r requirements.txt --break-system-packages
+
+# Option 1: Start server + run validation automatically
+PYTHONPATH=. python3 start_and_validate.py
+
+# Option 2: Start server only (foreground)
 PYTHONPATH=. python3 start_api.py
 ```
 

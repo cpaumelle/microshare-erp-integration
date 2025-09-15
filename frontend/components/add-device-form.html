@@ -1,0 +1,84 @@
+<!-- Add Device Form Component -->
+<form id="addDeviceForm" class="add-device-form">
+    <div class="form-group">
+        <label class="form-label">Device Type</label>
+        <select
+            name="deviceType"
+            class="form-control form-select"
+            onchange="DeviceManager.updateLocationFields(this.value)"
+            required
+        >
+            <option value="io.microshare.trap.packed">Rodent Sensor</option>
+            <option value="io.microshare.gateway.health.packed">Gateway</option>
+        </select>
+        <small class="text-muted">
+            Select the type of device you want to add to the system.
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Device ID (DevEUI)</label>
+        <input
+            type="text"
+            name="deviceId"
+            class="form-control"
+            placeholder="00-00-00-00-00-00-00-00"
+            pattern="^([0-9A-Fa-f]{2}-){7}[0-9A-Fa-f]{2}$"
+            title="Format: XX-XX-XX-XX-XX-XX-XX-XX"
+        >
+        <small class="text-muted">
+            Leave empty for auto-assignment during deployment. Format: XX-XX-XX-XX-XX-XX-XX-XX
+        </small>
+    </div>
+
+    <div id="location-fields">
+        <!-- Location fields will be populated by JavaScript based on device type -->
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Initial Status</label>
+        <select name="status" class="form-control form-select" required>
+            <option value="pending">Pending - Device not yet deployed</option>
+            <option value="active">Active - Device is operational</option>
+        </select>
+        <small class="text-muted">
+            Most new devices should start as "Pending" until deployment is complete.
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">GUID (Optional)</label>
+        <input
+            type="text"
+            name="guid"
+            class="form-control"
+            placeholder="Leave empty for auto-generation"
+        >
+        <small class="text-muted">
+            Unique identifier for ERP integration. Auto-generated if not provided.
+        </small>
+    </div>
+
+    <div class="alert alert-info">
+        <h6 class="mb-2">📍 Location Mapping</h6>
+        <p class="mb-1 small">
+            The location fields create the link between your ERP system and IoT devices.
+            The <strong>ERP Reference</strong> field is critical for synchronization.
+        </p>
+        <ul class="small mb-0">
+            <li><strong>Customer:</strong> Organization or client name</li>
+            <li><strong>Site:</strong> Facility or building name</li>
+            <li><strong>Area:</strong> Zone or department within the site</li>
+            <li><strong>ERP Reference:</strong> Your internal system identifier</li>
+        </ul>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="UI.hideModal('addDeviceModal')">
+            Cancel
+        </button>
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add Device
+        </button>
+    </div>
+</form>

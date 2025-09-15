@@ -411,6 +411,7 @@
             <div class="logo">
                 <h1>🚀 Microshare ERP Integration v3.0</h1>
                 <div class="performance-badge">⚡ 45x Faster CRUD Operations</div>
+                <small id="build-info" style="color: #666; display: block; margin-top: 4px;">Build: v3.0.1 | 2025-09-15 14:05 | Cache-Busted</small>
             </div>
             <div class="user-info">
                 <span id="userInfo">Loading...</span>
@@ -623,6 +624,14 @@
     </div>
 
     <script>
+        // ============================================================
+        // VERSION INFO - IMMEDIATE CONSOLE OUTPUT
+        // ============================================================
+        console.log(`%c🚀 MICROSHARE ERP INTEGRATION DASHBOARD`, 'background: #28a745; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold; font-size: 16px;');
+        console.log(`%c📦 Version: 3.0.1 | Build: 2025-09-15T14:05:00Z`, 'color: #007bff; font-weight: bold; font-size: 14px;');
+        console.log(`%c⚡ Cache busting enabled - You're running the latest code!`, 'color: #28a745; font-weight: bold;');
+        console.log(`%c🔧 CRUD Performance: Frontend optimizations active`, 'color: #17a2b8; font-weight: bold;');
+
         // ============================================================
         // DASHBOARD CONTROLLER (Canonical API Patterns)
         // ============================================================
@@ -866,9 +875,21 @@
                             this.showAlert(`✅ Device ${action} successfully in ${duration}s! ${improvement}`, 'success');
                             this.closeModal();
 
-                            // Immediate reload - no polling needed with optimized endpoints
+                            // Update local state instead of full reload for faster performance
                             this.editingDeviceId = null;
-                            this.loadDevices();
+
+                            // Update the device in local array if editing, or add if creating
+                            if (isEditing && result.device) {
+                                const deviceIndex = this.devices.findIndex(d => d.id === result.device.id || d.guid === result.device.guid);
+                                if (deviceIndex !== -1) {
+                                    this.devices[deviceIndex] = result.device;
+                                }
+                            } else if (result.device) {
+                                this.devices.push(result.device);
+                            }
+
+                            // Re-render the display without API call
+                            this.renderDevices();
                         } else {
                             this.showAlert(`Failed to ${isEditing ? 'update' : 'create'} device: ${result.message}`, 'error');
                         }
@@ -1078,8 +1099,9 @@
                             this.showAlert(`✅ Device deleted successfully in ${duration}s! ${improvement}`, 'success');
                             this.closeDeleteModal();
 
-                            // Immediate reload - no polling needed with optimized endpoints
-                            this.loadDevices();
+                            // Remove from local state instead of full reload for faster performance
+                            this.devices = this.devices.filter(d => d.id !== this.deletingDeviceId && d.guid !== this.deletingDeviceId);
+                            this.renderDevices();
                         } else {
                             this.showAlert(`Failed to delete device: ${result.message}`, 'error');
                         }

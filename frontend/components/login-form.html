@@ -1,0 +1,62 @@
+<!-- Login Form Component -->
+<form id="loginForm" class="login-form">
+    <div class="form-group">
+        <label for="username" class="form-label">Microshare Username/Email</label>
+        <input
+            type="email"
+            id="username"
+            name="username"
+            class="form-control"
+            required
+            placeholder="Enter your Microshare email"
+            autocomplete="username"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            required
+            placeholder="Enter your Microshare password"
+            autocomplete="current-password"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="environment" class="form-label">Environment</label>
+        <select id="environment" name="environment" class="form-control form-select">
+            <option value="dev">Development (dapi.microshare.io)</option>
+            <option value="prod">Production (api.microshare.io)</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-lg w-100" id="loginBtn">
+        Login to Microshare
+    </button>
+
+    <div class="loading d-none" id="loading">
+        <div class="spinner"></div>
+        Authenticating with Microshare...
+    </div>
+</form>
+
+<div class="demo-info mt-4">
+    <h6>🚀 Demo Features</h6>
+    <ul class="small text-muted">
+        <li>Web app authentication with session management</li>
+        <li>Device & gateway CRUD operations</li>
+        <li>Real-time device discovery</li>
+        <li>ERP integration patterns</li>
+        <li>Production-ready code examples</li>
+    </ul>
+
+    <h6 class="mt-3">🔧 For Developers</h6>
+    <p class="small text-muted">
+        This demo showcases working authentication and device management patterns
+        for Microshare ERP integration. View source code to see implementation details.
+    </p>
+</div>

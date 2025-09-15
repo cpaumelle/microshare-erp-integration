@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        .pass { background: #d4edda; border-color: #28a745; }
+        .fail { background: #f8d7da; border-color: #dc3545; }
+        .loading { background: #fff3cd; border-color: #ffc107; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Frontend Module Test</h1>
+    <div id="test-results"></div>
+
+    <!-- Load modules in correct order -->
+    <script src="js/config.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/devices.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        let testResults = [];
+
+        function addTest(name, passed, details = '') {
+            testResults.push({ name, passed, details });
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const container = document.getElementById('test-results');
+            container.innerHTML = testResults.map(test => `
+                <div class="test ${test.passed ? 'pass' : 'fail'}">
+                    <strong>${test.passed ? '✅' : '❌'} ${test.name}</strong>
+                    ${test.details ? `<br><small>${test.details}</small>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Run tests after page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🧪 Starting frontend module tests...');
+
+            // Test 1: CONFIG module
+            try {
+                addTest('CONFIG module loaded', typeof CONFIG !== 'undefined',
+                    `API Base: ${CONFIG.API.BASE_URL}`);
+            } catch (e) {
+                addTest('CONFIG module loaded', false, e.message);
+            }
+
+            // Test 2: UI module
+            try {
+                addTest('UI module loaded', typeof UI !== 'undefined',
+                    `Methods: ${Object.keys(UI).length}`);
+            } catch (e) {
+                addTest('UI module loaded', false, e.message);
+            }
+
+            // Wait for AuthManager initialization
+            let waitAttempts = 0;
+            while (!window.AuthManager && waitAttempts < 50) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                waitAttempts++;
+            }
+
+            // Test 3: AuthManager module
+            try {
+                addTest('AuthManager initialized',
+                    window.AuthManager && typeof window.AuthManager.login === 'function',
+                    `Instance created: ${!!window.AuthManager}`);
+            } catch (e) {
+                addTest('AuthManager initialized', false, e.message);
+            }
+
+            // Wait for DeviceManager initialization
+            waitAttempts = 0;
+            while (!window.DeviceManager && waitAttempts < 50) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                waitAttempts++;
+            }
+
+            // Test 4: DeviceManager module
+            try {
+                addTest('DeviceManager initialized',
+                    window.DeviceManager && typeof window.DeviceManager.loadDevices === 'function',
+                    `Instance created: ${!!window.DeviceManager}`);
+            } catch (e) {
+                addTest('DeviceManager initialized', false, e.message);
+            }
+
+            // Test 5: App module
+            try {
+                addTest('App module loaded',
+                    typeof App !== 'undefined' && typeof App.initialize === 'function',
+                    `Current page: ${App.currentPage}`);
+            } catch (e) {
+                addTest('App module loaded', false, e.message);
+            }
+
+            // Test 6: API connectivity
+            try {
+                const response = await fetch('http://10.35.1.112:8000/health');
+                const data = await response.json();
+                addTest('API connectivity', response.ok,
+                    `Status: ${data.status}, Version: ${data.version}`);
+            } catch (e) {
+                addTest('API connectivity', false, e.message);
+            }
+
+            // Test 7: Try initializing the app
+            try {
+                await App.initialize();
+                addTest('App initialization', true, 'Application initialized successfully');
+            } catch (e) {
+                addTest('App initialization', false, e.message);
+            }
+
+            console.log('🧪 Frontend tests completed');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!-- Device Card Component Template -->
+<div class="device-card" data-device-id="{{device.id}}">
+    <div class="device-header">
+        <div>
+            <div class="device-id">{{device.id_formatted}}</div>
+            <small class="text-muted">{{device.type_name}}</small>
+            <small class="text-muted">GUID: {{device.guid}}</small>
+        </div>
+        <span class="device-status {{status.class}}">{{status.label}}</span>
+    </div>
+
+    <div class="device-location">
+        <!-- Location fields will be populated by JavaScript -->
+        {{#each location_fields}}
+        <div class="location-item">
+            <span class="location-label">{{label}}</span>
+            <span class="location-value">{{value}}</span>
+        </div>
+        {{/each}}
+    </div>
+
+    <div class="device-meta mt-3">
+        <div class="row">
+            <div class="col-md-6">
+                <small class="text-muted">
+                    <strong>Record Type:</strong><br>
+                    <code class="small">{{device.meta.record_type}}</code>
+                </small>
+            </div>
+            <div class="col-md-6">
+                <small class="text-muted">
+                    <strong>Cluster:</strong><br>
+                    {{device.cluster_name}}
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="device-actions mt-3">
+        <button
+            class="btn btn-sm btn-outline"
+            onclick="DeviceManager.editDevice('{{device.id}}')"
+            title="Edit device (Ctrl+E)"
+        >
+            <i class="bi bi-pencil"></i> Edit
+        </button>
+        <button
+            class="btn btn-sm btn-warning"
+            onclick="DeviceManager.toggleDeviceStatus('{{device.id}}')"
+            title="Toggle status"
+        >
+            <i class="bi bi-arrow-repeat"></i> Toggle
+        </button>
+        <button
+            class="btn btn-sm btn-danger"
+            onclick="DeviceManager.deleteDevice('{{device.id}}')"
+            title="Delete device (Ctrl+Delete)"
+        >
+            <i class="bi bi-trash"></i> Delete
+        </button>
+    </div>
+</div>

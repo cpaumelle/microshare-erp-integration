@@ -1,0 +1,182 @@
+{
+  "metadata": {
+    "timestamp": "2025-09-15T14:54:23.682448",
+    "target_url": "http://localhost:8000",
+    "auth_overhead_ms": 856.7122280001058,
+    "total_tests": 9,
+    "successful_tests": 9
+  },
+  "results": {
+    "basic__health": {
+      "endpoint": "/health",
+      "method": "GET",
+      "authenticated": false,
+      "requests_sent": 5,
+      "successful_requests": 5,
+      "failed_requests": 0,
+      "average_ms": 2.734185000008438,
+      "median_ms": 1.536675998067949,
+      "minimum_ms": 1.4000940027472097,
+      "maximum_ms": 7.74192300013965,
+      "std_dev_ms": 2.8005542094841416,
+      "status_codes": [
+        200
+      ],
+      "success_rate": 100.0,
+      "p95_ms": 7.74192300013965,
+      "p99_ms": 7.74192300013965
+    },
+    "basic__": {
+      "endpoint": "/",
+      "method": "GET",
+      "authenticated": false,
+      "requests_sent": 5,
+      "successful_requests": 5,
+      "failed_requests": 0,
+      "average_ms": 3.2144643992069177,
+      "median_ms": 2.6304179991711862,
+      "minimum_ms": 2.1902899970882572,
+      "maximum_ms": 5.114701001730282,
+      "std_dev_ms": 1.2073838413931408,
+      "status_codes": [
+        200
+      ],
+      "success_rate": 100.0,
+      "p95_ms": 5.114701001730282,
+      "p99_ms": 5.114701001730282
+    },
+    "basic__docs": {
+      "endpoint": "/docs",
+      "method": "GET",
+      "authenticated": false,
+      "requests_sent": 5,
+      "successful_requests": 5,
+      "failed_requests": 0,
+      "average_ms": 1.487611199991079,
+      "median_ms": 1.28459500047029,
+      "minimum_ms": 1.152815999375889,
+      "maximum_ms": 2.466652000293834,
+      "std_dev_ms": 0.550085662345597,
+      "status_codes": [
+        200
+      ],
+      "success_rate": 100.0,
+      "p95_ms": 2.466652000293834,
+      "p99_ms": 2.466652000293834
+    },
+    "authentication": {
+      "endpoint": "/api/v1/auth/login",
+      "method": "POST",
+      "authenticated": false,
+      "requests_sent": 5,
+      "successful_requests": 5,
+      "failed_requests": 0,
+      "average_ms": 494.34038439867436,
+      "median_ms": 476.5764889998536,
+      "minimum_ms": 431.42996599999606,
+      "maximum_ms": 622.8915119972953,
+      "std_dev_ms": 74.27075960136696,
+      "status_codes": [
+        401
+      ],
+      "success_rate": 100.0,
+      "p95_ms": 622.8915119972953,
+      "p99_ms": 622.8915119972953
+    },
+    "auth__devices_": {
+      "endpoint": "/api/v1/devices/",
+      "method": "GET",
+      "authenticated": true,
+      "requests_sent": 10,
+      "successful_requests": 10,
+      "failed_requests": 0,
+      "average_ms": 1008.0148120996455,
+      "median_ms": 1010.8348174999264,
+      "minimum_ms": 967.7030260027095,
+      "maximum_ms": 1044.6490159993118,
+      "std_dev_ms": 24.003523465727238,
+      "status_codes": [
+        200
+      ],
+      "success_rate": 100.0,
+      "p95_ms": 1044.6490159993118,
+      "p99_ms": 1044.6490159993118
+    },
+    "auth__devices_clusters": {
+      "endpoint": "/api/v1/devices/clusters",
+      "method": "GET",
+      "authenticated": true,
+      "requests_sent": 10,
+      "successful_requests": 10,
+      "failed_requests": 0,
+      "average_ms": 2.174888300578459,
+      "median_ms": 1.979907501663547,
+      "minimum_ms": 1.8179150029027369,
+      "maximum_ms": 3.0640570003015455,
+      "std_dev_ms": 0.4495939307974299,
+      "status_codes": [
+        404
+      ],
+      "success_rate": 100.0,
+      "p95_ms": 3.0640570003015455,
+      "p99_ms": 3.0640570003015455
+    },
+    "auth__auth_me": {
+      "endpoint": "/api/v1/auth/me",
+      "method": "GET",
+      "authenticated": true,
+      "requests_sent": 10,
+      "successful_requests": 10,
+      "failed_requests": 0,
+      "average_ms": 2.044258999376325,
+      "median_ms": 1.9580735006456962,
+      "minimum_ms": 1.7615750002732966,
+      "maximum_ms": 2.950861999124754,
+      "std_dev_ms": 0.32778895495264293,
+      "status_codes": [
+        404
+      ],
+      "success_rate": 100.0,
+      "p95_ms": 2.950861999124754,
+      "p99_ms": 2.950861999124754
+    },
+    "auth__auth_status": {
+      "endpoint": "/api/v1/auth/status",
+      "method": "GET",
+      "authenticated": true,
+      "requests_sent": 10,
+      "successful_requests": 10,
+      "failed_requests": 0,
+      "average_ms": 1.676807400144753,
+      "median_ms": 1.501934999396326,
+      "minimum_ms": 1.4283850032370538,
+      "maximum_ms": 2.568546999100363,
+      "std_dev_ms": 0.3942522607489922,
+      "status_codes": [
+        200
+      ],
+      "success_rate": 100.0,
+      "p95_ms": 2.568546999100363,
+      "p99_ms": 2.568546999100363
+    },
+    "crud_create": {
+      "endpoint": "/api/v1/devices/create",
+      "method": "POST",
+      "authenticated": true,
+      "requests_sent": 3,
+      "successful_requests": 3,
+      "failed_requests": 0,
+      "average_ms": 1010.2790380005899,
+      "median_ms": 1011.8673430006311,
+      "minimum_ms": 958.9682250007172,
+      "maximum_ms": 1060.0015460004215,
+      "std_dev_ms": 50.53538386751593,
+      "status_codes": [
+        200
+      ],
+      "success_rate": 100.0,
+      "p95_ms": 1060.0015460004215,
+      "p99_ms": 1060.0015460004215
+    }
+  }
+}

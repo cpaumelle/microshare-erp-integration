@@ -1,0 +1,60 @@
+{
+  "tests_passed": 9,
+  "tests_failed": 0,
+  "details": [
+    {
+      "test": "Environment Configuration",
+      "status": "PASS",
+      "message": "All required environment variables are configured",
+      "duration_ms": null
+    },
+    {
+      "test": "Credential Configuration",
+      "status": "PASS",
+      "message": "Credentials appear to be configured (not placeholder values)",
+      "duration_ms": null
+    },
+    {
+      "test": "Existing Server Check",
+      "status": "PASS",
+      "message": "Found running server: microshare-erp-integration",
+      "duration_ms": null
+    },
+    {
+      "test": "API Health Check",
+      "status": "PASS",
+      "message": "API is running - microshare-erp-integration",
+      "duration_ms": 36.30546799831791
+    },
+    {
+      "test": "Authentication",
+      "status": "PASS",
+      "message": "Successfully authenticated and received session token",
+      "duration_ms": 866.9368560003932
+    },
+    {
+      "test": "Device Discovery",
+      "status": "PASS",
+      "message": "Found 11 device(s) with authenticated access",
+      "duration_ms": 1000.1784349988156
+    },
+    {
+      "test": "Data Availability",
+      "status": "PASS",
+      "message": "Your account has accessible device data",
+      "duration_ms": null
+    },
+    {
+      "test": "Device Structure",
+      "status": "PASS",
+      "message": "Device data structure is valid",
+      "duration_ms": null
+    },
+    {
+      "test": "CRUD Operations",
+      "status": "PASS",
+      "message": "Device creation endpoint working",
+      "duration_ms": 1021.6506010001467
+    }
+  ]
+}

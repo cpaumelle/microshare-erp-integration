@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microshare ERP Integration - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
+    <link href="css/components.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                🔗 Microshare ERP Integration
+                <span class="badge bg-success ms-2">v3.0</span>
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span id="user-info" class="navbar-text d-none"></span>
+                <button id="logout-btn" class="btn btn-outline-light btn-sm ms-2 d-none">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Status Bar -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-info d-flex align-items-center">
+                    <div class="spinner-border spinner-border-sm me-2 d-none" role="status" id="loading-spinner"></div>
+                    <span id="status-message">Ready to manage devices</span>
+                    <small id="refresh-timer" class="text-muted ms-auto"></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <button id="discover-btn" class="btn btn-primary me-2">
+                    <i class="bi bi-search"></i> Discover Devices
+                </button>
+                <button id="add-device-btn" class="btn btn-success me-2">
+                    <i class="bi bi-plus-circle"></i> Add Device
+                </button>
+                <button id="refresh-btn" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+                <button id="benchmark-btn" class="btn btn-outline-info">
+                    <i class="bi bi-speedometer2"></i> Benchmark
+                </button>
+            </div>
+        </div>
+
+        <!-- Device Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-bg-primary">
+                    <div class="card-body text-center">
+                        <h2 id="total-devices" class="mb-1">0</h2>
+                        <p class="mb-0">Total Devices</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-success">
+                    <div class="card-body text-center">
+                        <h2 id="active-devices" class="mb-1">0</h2>
+                        <p class="mb-0">Active</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-warning">
+                    <div class="card-body text-center">
+                        <h2 id="pending-devices" class="mb-1">0</h2>
+                        <p class="mb-0">Pending</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-bg-info">
+                    <div class="card-body text-center">
+                        <h2 id="total-clusters" class="mb-1">0</h2>
+                        <p class="mb-0">Clusters</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-cpu"></i> Device Management
+                        </h5>
+                        <span class="badge bg-secondary" id="device-count">0 devices</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="devices-container" class="row">
+                            <!-- Device cards will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Device Modal -->
+    <div class="modal fade" id="addDeviceModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-plus-circle"></i> Add New Device
+                    </h5>
+                    <button type="button" class="btn-close modal-close"></button>
+                </div>
+                <div class="modal-body" id="add-device-form-container">
+                    <!-- Add device form will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Application JS modules -->
+    <script src="js/config.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/devices.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Dashboard-specific initialization
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Add benchmark button handler
+            UI.addEventHandler('benchmark-btn', 'click', async () => {
+                const results = await DeviceManager.runBenchmark();
+                if (results) {
+                    console.log('Benchmark results:', results);
+                }
+            });
+
+            // Load add device form component
+            try {
+                const response = await fetch('components/add-device-form.html');
+                const formHTML = await response.text();
+                document.getElementById('add-device-form-container').innerHTML = formHTML;
+            } catch (error) {
+                console.warn('Could not load add device form component:', error);
+            }
+        });
+    </script>
+</body>
+</html>

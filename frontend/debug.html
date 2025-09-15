@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Microshare ERP Integration</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .debug { background: #000; color: #0f0; padding: 20px; border-radius: 5px; margin: 10px 0; font-family: monospace; }
+        .login-container { background: white; padding: 20px; border-radius: 10px; max-width: 400px; margin: 20px auto; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>🐛 Debug Mode - Microshare ERP Integration</h1>
+
+    <div class="debug" id="debug-log">
+        Loading modules...<br>
+    </div>
+
+    <div class="login-container">
+        <h2>Login Test</h2>
+        <div id="login-form-container">
+            <!-- Login form will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const debugLog = document.getElementById('debug-log');
+        function log(message, type = 'info') {
+            const timestamp = new Date().toISOString().slice(11, -1);
+            const color = type === 'error' ? '#f00' : type === 'success' ? '#0f0' : '#fff';
+            debugLog.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span><br>`;
+            console.log(`[${timestamp}] ${message}`);
+        }
+
+        window.addEventListener('error', (e) => {
+            log(`ERROR: ${e.message} at ${e.filename}:${e.lineno}`, 'error');
+        });
+
+        log('Starting module loading...');
+    </script>
+
+    <!-- Load modules one by one with debugging -->
+    <script>
+        log('Loading CONFIG...');
+    </script>
+    <script src="js/config.js"></script>
+    <script>
+        log(`CONFIG loaded: ${typeof CONFIG !== 'undefined' ? 'SUCCESS' : 'FAILED'}`, typeof CONFIG !== 'undefined' ? 'success' : 'error');
+        if (typeof CONFIG !== 'undefined') {
+            log(`API Base: ${CONFIG.API.BASE_URL}`);
+        }
+    </script>
+
+    <script>
+        log('Loading UI...');
+    </script>
+    <script src="js/ui.js"></script>
+    <script>
+        log(`UI loaded: ${typeof UI !== 'undefined' ? 'SUCCESS' : 'FAILED'}`, typeof UI !== 'undefined' ? 'success' : 'error');
+    </script>
+
+    <script>
+        log('Loading AuthManager...');
+    </script>
+    <script src="js/auth.js"></script>
+    <script>
+        log(`AuthManager loaded: ${typeof AuthManager !== 'undefined' ? 'SUCCESS' : 'FAILED'}`, typeof AuthManager !== 'undefined' ? 'success' : 'error');
+        if (typeof AuthManager !== 'undefined') {
+            log(`AuthManager.initializeAuth: ${typeof AuthManager.initializeAuth}`);
+            log(`AuthManager methods: ${Object.getOwnPropertyNames(Object.getPrototypeOf(AuthManager)).join(', ')}`);
+        }
+    </script>
+
+    <script>
+        log('Loading DeviceManager...');
+    </script>
+    <script src="js/devices.js"></script>
+    <script>
+        log(`DeviceManager loaded: ${typeof DeviceManager !== 'undefined' ? 'SUCCESS' : 'FAILED'}`, typeof DeviceManager !== 'undefined' ? 'success' : 'error');
+    </script>
+
+    <script>
+        log('Loading App...');
+    </script>
+    <script src="js/app.js"></script>
+    <script>
+        log(`App loaded: ${typeof App !== 'undefined' ? 'SUCCESS' : 'FAILED'}`, typeof App !== 'undefined' ? 'success' : 'error');
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            log('DOM Content Loaded - Starting tests...');
+
+            // Test login form loading
+            try {
+                log('Loading login form component...');
+                const response = await fetch('components/login-form.html');
+                const loginFormHTML = await response.text();
+                document.getElementById('login-form-container').innerHTML = loginFormHTML;
+                log('Login form component loaded successfully', 'success');
+            } catch (error) {
+                log(`Failed to load login form: ${error.message}`, 'error');
+            }
+
+            // Test App initialization
+            try {
+                log('Initializing App...');
+                await App.initialize();
+                log('App initialized successfully', 'success');
+            } catch (error) {
+                log(`App initialization failed: ${error.message}`, 'error');
+                log(`Error stack: ${error.stack}`, 'error');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -18,7 +18,7 @@ This document outlines a bidirectional synchronization system between traditiona
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │Demo Pest ERP    │    │Sample ERP-       │    │   Microshare    │
-│    (Odoo)       │◄──►│Microshare sync   │◄──►│   IoT Platform  │
+│(e.g. Odoo)      │◄──►│Microshare sync   │◄──►│   IoT Platform  │
 │                 │    │      app         │    │                 │
 │ Inspection      │    │ • Discovery API  │    │ Device Clusters │
 │ Points as       │    │ • Mapping Logic  │    │ • Trap Sensors  │

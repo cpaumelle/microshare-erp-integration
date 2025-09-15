@@ -281,41 +281,34 @@ class FastCRUDManager:
     @staticmethod
     async def update_device_fast(device_id: str, updates: dict, access_token: str, api_base: str) -> dict:
         """
-        Fast device update - ~1 second total
+        TRULY Fast device update - ~1 second total
 
-        Finds and updates device without wildcard discovery
+        Uses ONLY cached clusters, NO discovery fallback to ensure speed
         """
         start_time = time.time()
 
         try:
-            # Use cached clusters to find device
+            # Use cached clusters ONLY - no discovery fallback for speed
             current_time = time.time()
             cache = FastCRUDManager._cluster_cache
 
-            # Only do discovery if cache is completely empty (rare)
+            # If cache is empty, require manual cache population first
             if not cache['data']:
-                # FALLBACK: Cache is empty, need to populate it once
-                from .operations import OptimizedDeviceManager
-                discovery_result = await OptimizedDeviceManager.wildcard_discovery_with_cache(
-                    access_token, api_base
-                )
-                if discovery_result['success']:
-                    cache['data'] = discovery_result['cluster_map']
-                    cache['timestamp'] = current_time
-                else:
-                    return {
-                        'success': False,
-                        'error': 'Failed to get cluster information',
-                        'duration': time.time() - start_time
-                    }
+                return {
+                    'success': False,
+                    'error': 'Cache empty - call GET /api/v1/devices/ first to populate cache',
+                    'duration': time.time() - start_time,
+                    'suggestion': 'Frontend should call list devices before updates to ensure cache'
+                }
 
-            # Search for device across cached clusters
+            # Search for device across cached clusters (FAST - no discovery)
             for cluster_id, cluster_info in cache['data'].items():
                 cluster_result = {
                     'cluster_id': cluster_id,
                     'rec_type': cluster_info['rec_type']
                 }
 
+                # Direct cluster access - fast ~0.5s
                 cluster_data_result = await FastCRUDManager.direct_cluster_get(
                     cluster_result, access_token, api_base
                 )
@@ -324,9 +317,14 @@ class FastCRUDManager:
                     cluster_data = cluster_data_result['data']
                     devices = cluster_data['data']['devices']
 
-                    # Find and update device
+                    # Find and update device by device_id OR guid
                     for i, device in enumerate(devices):
-                        if device.get('deviceId') == device_id:
+                        device_match = (
+                            device.get('deviceId') == device_id or
+                            device.get('guid') == device_id or
+                            device.get('id') == device_id
+                        )
+                        if device_match:
                             # Update device data
                             if 'customer' in updates or 'site' in updates or 'area' in updates or 'erp_reference' in updates:
                                 location = device.get('meta', {}).get('location', ['', '', '', ''])
@@ -402,22 +400,14 @@ class FastCRUDManager:
             current_time = time.time()
             cache = FastCRUDManager._cluster_cache
 
-            # Only do discovery if cache is completely empty (rare)
+            # If cache is empty, require manual cache population first (NO DISCOVERY)
             if not cache['data']:
-                # FALLBACK: Cache is empty, need to populate it once
-                from .operations import OptimizedDeviceManager
-                discovery_result = await OptimizedDeviceManager.wildcard_discovery_with_cache(
-                    access_token, api_base
-                )
-                if discovery_result['success']:
-                    cache['data'] = discovery_result['cluster_map']
-                    cache['timestamp'] = current_time
-                else:
-                    return {
-                        'success': False,
-                        'error': 'Failed to get cluster information',
-                        'duration': time.time() - start_time
-                    }
+                return {
+                    'success': False,
+                    'error': 'Cache empty - call GET /api/v1/devices/ first to populate cache',
+                    'duration': time.time() - start_time,
+                    'suggestion': 'Frontend should call list devices before delete to ensure cache'
+                }
 
             # Step 2: Search clusters using cached data (fast)
             for cluster_id, cluster_info in cache['data'].items():

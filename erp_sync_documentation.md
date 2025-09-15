@@ -1,5 +1,5 @@
 # ERP-IoT Synchronization Architecture
-## Microshare x Odoo Integration for Pest Control Management
+## Microshare x ERP Integration for Pest Control Management
 
 **Document Version**: 2.0  
 **Implementation Status**: Phase 1 Discovery Operational  
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This document outlines a bidirectional synchronization system between traditional ERP business processes (Odoo) and modern IoT device management (Microshare) for pest control operations. The implementation bridges the gap between business-centric inspection scheduling and real-time sensor monitoring.
+This document outlines a bidirectional synchronization system between traditional ERP business processes (we used the open source Odoo for our example) and modern IoT device management (Microshare) for pest control operations. The implementation bridges the gap between business-centric inspection scheduling and real-time sensor monitoring.
 
 ## Current Implementation - Phase 1 Discovery
 

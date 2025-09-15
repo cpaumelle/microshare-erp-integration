@@ -17,32 +17,32 @@
     {
       "test": "API Server Process",
       "status": "PASS",
-      "message": "API server started with PID 2653",
+      "message": "API server started with PID 1399",
       "duration_ms": null
     },
     {
       "test": "API Health Check",
       "status": "PASS",
       "message": "API is running - microshare-erp-integration",
-      "duration_ms": 79.52945699980773
+      "duration_ms": 74.88535800007412
     },
     {
       "test": "API Status",
       "status": "PASS",
       "message": "API operational with 0 features configured",
-      "duration_ms": 38.76729300009174
+      "duration_ms": 32.08410199999889
     },
     {
       "test": "Device Discovery",
       "status": "FAIL",
       "message": "Discovery failed with HTTP 404",
-      "duration_ms": 33.410275999813166
+      "duration_ms": 36.365982000006625
     },
     {
       "test": "GUID CRUD Operations",
       "status": "FAIL",
-      "message": "CRUD test failed with exit code 1",
-      "duration_ms": 198.08399899920914
+      "message": "CRUD test timed out after 2 minutes",
+      "duration_ms": 120037.68655500017
     }
   ]
 }

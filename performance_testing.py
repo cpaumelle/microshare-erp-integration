@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Optimized Performance Tester - Production Ready
-Version: 3.0.0 - OPTIMIZED PATTERNS
+Performance Tester - Production Ready
+Version: 3.0.0
 Created: 2025-09-12 09:15:00 UTC
 
-Comprehensive performance testing using optimized patterns discovered through systematic testing:
+Comprehensive performance testing using patterns discovered through systematic testing:
 - Web app authentication (1,150ms)
 - Direct cluster access (500ms per cluster)
 - Wildcard discovery comparison (19,000ms)
@@ -23,8 +23,8 @@ from typing import Dict, Any, List, Optional
 from contextlib import asynccontextmanager
 import sys
 
-class OptimizedPerformanceTester:
-    """Comprehensive performance tester using optimized API patterns"""
+class PerformanceTester:
+    """Comprehensive performance tester using API patterns"""
 
     def __init__(self):
         self.per_page = 2000  # Configurable page size for performance testing

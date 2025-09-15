@@ -1,136 +1,97 @@
-# Microshare ERP Integration v2.0
+# Microshare ERP Integration
 
-Clean, production-ready FastAPI backend for Microshare device management and ERP integration.
+**Production-ready sample application** demonstrating ERP-IoT integration with Microshare platform.
 
-## Quick Installation (Recommended)
+## What This Is
+
+This sample provides:
+- **FastAPI backend** for ERP-Microshare synchronization
+- **Real device management** with full CRUD operations
+- **Authentication patterns** for Microshare API integration
+- **Caching strategies** for production workloads
+- **Docker deployment** configuration
+
+## Quick Start
+
 ```bash
+# Clone and setup
 git clone https://github.com/cpaumelle/microshare-erp-integration.git
 cd microshare-erp-integration
-./quick_install.sh
+cp .env.example .env  # Demo credentials included
+
+# Install and run
+python3 -m pip install -r requirements.txt
 PYTHONPATH=. python3 start_api.py
-The installer will:
+```
 
-Install all dependencies automatically
-Ask for your Microshare environment (dev/prod)
-Prompt for your credentials securely
-Configure the application properly
+**Verify installation:**
+```bash
+curl http://localhost:8000/health
+open http://localhost:8000/docs  # Interactive API documentation
+```
 
-Manual Installation
-If you prefer manual setup:
-bashgit clone https://github.com/cpaumelle/microshare-erp-integration.git
-cd microshare-erp-integration
-python3 -m pip install -r requirements.txt --break-system-packages
+## Key Features
 
-# Create .env file with your settings
-cp .env.example .env
-# Edit .env with your Microshare credentials and environment
+- **Web Authentication**: Username/password (no API keys required)
+- **Device CRUD**: Complete create/read/update/delete operations
+- **Smart Caching**: Sub-second response times
+- **Multi-Environment**: Development and production support
+- **Docker Ready**: Production deployment configuration
+- **Working Demo**: 7 devices across 2 clusters discoverable
 
-# Start the API
-PYTHONPATH=. python3 start_api.py
-Configuration
-The application requires Microshare credentials in .env file:
-bashMICROSHARE_AUTH_URL=https://dauth.microshare.io  # or https://auth.microshare.io for prod
-MICROSHARE_API_URL=https://dapi.microshare.io    # or https://api.microshare.io for prod
+## Architecture
+
+```
+api/
+├── auth/           # Microshare authentication
+├── devices/        # Device CRUD and operations
+├── config/         # Application configuration
+└── main.py         # FastAPI application
+```
+
+**Core Technologies:**
+- FastAPI + Pydantic v2
+- httpx for async HTTP
+- Smart caching system
+- Docker deployment
+
+## Documentation
+
+- **[Developer Guide](DEVELOPER_GUIDE.md)** - Complete development documentation
+- **[API Docs](http://localhost:8000/docs)** - Interactive API documentation (when running)
+- **[Device CRUD Guide](microshare_device_crud.md)** - Detailed device operations
+- **[Credentials Setup](docs/MICROSHARE_CREDENTIALS.md)** - Getting Microshare access
+
+## Configuration
+
+```bash
+# .env file (demo credentials included)
+MICROSHARE_AUTH_URL=https://dauth.microshare.io      # Development
+MICROSHARE_API_URL=https://dapi.microshare.io        # Development
 MICROSHARE_USERNAME=your-username@company.com
 MICROSHARE_PASSWORD=your-secure-password
-Key Features
+```
 
-Web App Authentication: No API keys needed - just username/password
-Performance Optimized: Optimized performance device retrieval with caching
-Clean Architecture: Fixed Python imports, no container crashes
-Multi-Environment: Supports both development and production Microshare
-Production Ready: Docker deployment with health checks
-Validated Performance: 7 devices across 2 clusters discovery
+## Docker Deployment
 
-API Documentation
-After starting the server:
-
-API Documentation: http://localhost:8000/docs
-Health Check: http://localhost:8000/health
-API Status: http://localhost:8000/api/v1/status
-
-Docker Deployment
-bashdocker-compose up --build
-Troubleshooting
-"Field required" error for username/password
-
-Cause: Missing or incomplete .env file
-Solution: Run ./quick_install.sh or manually create .env with credentials
-
-"ModuleNotFoundError: No module named 'api'"
-
-Cause: Python path issue
-Solution: Use PYTHONPATH=. python3 start_api.py
-
-"ModuleNotFoundError: No module named 'pydantic_settings'"
-
-Cause: Missing dependency
-Solution: Run ./quick_install.sh or pip install pydantic-settings --break-system-packages
-
-Migration from v1.x
-This v2.0 release represents a complete architectural rewrite:
-
-Fixed all Python import structure issues
-Eliminated container crashes and startup failures
-Implemented web-based authentication system
-Added performance optimization with 45x improvement
-Production-ready deployment with comprehensive health checks
-
-Support
-
-GitHub Issues: Report bugs or request features
-API Documentation: Complete endpoint documentation at /docs
-Health Monitoring: Status endpoint at /health
-
-Architecture
-
-FastAPI 0.104+: Modern async Python web framework
-Pydantic v2: Data validation and settings management
-httpx: Async HTTP client for Microshare integration
-Docker: Containerized deployment with health checks
-
-Performance Benchmarks
-
-Authentication: ~900ms
-Device Discovery: 7 devices, 2 clusters
-Direct Cluster Access: ~500ms per cluster
-Concurrent Operations: Optimized parallel processing
-
-## Deployment Validation
-
-After installation, validate your deployment:
 ```bash
-# Option 1: Validate with running server
-PYTHONPATH=. python3 start_api.py &  # Start in background
-python3 validate_deployment.py       # Run validation
+docker-compose up --build
+```
 
-# Option 2: Use installer with integrated validation
-./quick_install.sh                   # Choose option 2 for automatic validation
-The validator will test:
+## Validation
 
-Authentication with your credentials
-Device discovery performance
-API response times
-Device discovery (results vary by account)
-Performance benchmarks (45x improvement validation)
+```bash
+# Test your deployment
+PYTHONPATH=. python3 start_api.py &
+python3 validate_deployment.py
+```
 
-Expected Validation Results
+## Support
 
-Authentication: ~900ms
-Device Discovery: 7 devices, 2 clusters found
-Performance: Optimized performance than baseline discovery
-ERP Integration: ERP readiness analysis for integration
+- **GitHub Issues**: Bug reports and feature requests
+- **Microshare Support**: support@microshare.io
+- **Documentation**: See [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) for complete details
 
-## Validation Results
+## License
 
-The validator tests core functionality:
-- API connectivity and health
-- Authentication configuration  
-- Device discovery (finds whatever is in your account)
-- Basic performance testing
-
-Results will vary based on:
-- Your Microshare account data
-- Network conditions
-- Environment (dev/prod)
-- Number of devices/clusters in your account
+MIT License - see LICENSE file for details.

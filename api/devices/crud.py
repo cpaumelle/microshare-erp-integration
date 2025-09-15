@@ -23,7 +23,7 @@ from typing import Dict, Any, List, Optional
 from fastapi import HTTPException
 from pydantic import BaseModel, Field
 
-# Working record types - matches canonical_operations.py
+# Working record types - matches operations.py
 TRAP_RECORD_TYPE = "io.microshare.trap.packed"
 GATEWAY_RECORD_TYPE = "io.microshare.gateway.health.packed"
 
@@ -95,7 +95,7 @@ class FastCRUDManager:
                     }
 
         # FALLBACK: Cache is empty, need to populate it once (rare)
-        from .canonical_operations import OptimizedDeviceManager
+        from .operations import OptimizedDeviceManager
 
         discovery_result = await OptimizedDeviceManager.wildcard_discovery_with_cache(
             access_token, api_base
@@ -295,7 +295,7 @@ class FastCRUDManager:
             # Only do discovery if cache is completely empty (rare)
             if not cache['data']:
                 # FALLBACK: Cache is empty, need to populate it once
-                from .canonical_operations import OptimizedDeviceManager
+                from .operations import OptimizedDeviceManager
                 discovery_result = await OptimizedDeviceManager.wildcard_discovery_with_cache(
                     access_token, api_base
                 )
@@ -405,7 +405,7 @@ class FastCRUDManager:
             # Only do discovery if cache is completely empty (rare)
             if not cache['data']:
                 # FALLBACK: Cache is empty, need to populate it once
-                from .canonical_operations import OptimizedDeviceManager
+                from .operations import OptimizedDeviceManager
                 discovery_result = await OptimizedDeviceManager.wildcard_discovery_with_cache(
                     access_token, api_base
                 )

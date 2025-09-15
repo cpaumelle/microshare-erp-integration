@@ -1,0 +1,72 @@
+{
+  "tests_passed": 11,
+  "tests_failed": 0,
+  "details": [
+    {
+      "test": "Environment Configuration",
+      "status": "PASS",
+      "message": "All required environment variables are configured",
+      "duration_ms": null
+    },
+    {
+      "test": "Credential Configuration",
+      "status": "PASS",
+      "message": "Credentials appear to be configured (not placeholder values)",
+      "duration_ms": null
+    },
+    {
+      "test": "Existing Server Check",
+      "status": "PASS",
+      "message": "No existing server found - will start new one",
+      "duration_ms": null
+    },
+    {
+      "test": "API Server Process",
+      "status": "PASS",
+      "message": "API server started with PID 1466",
+      "duration_ms": null
+    },
+    {
+      "test": "Server Verification",
+      "status": "PASS",
+      "message": "API server started and responding",
+      "duration_ms": null
+    },
+    {
+      "test": "API Health Check",
+      "status": "PASS",
+      "message": "API is running - microshare-erp-integration",
+      "duration_ms": 31.39246299997467
+    },
+    {
+      "test": "Authentication",
+      "status": "PASS",
+      "message": "Successfully authenticated and received session token",
+      "duration_ms": 875.5061890001343
+    },
+    {
+      "test": "Device Discovery",
+      "status": "PASS",
+      "message": "Found 7 device(s) with authenticated access",
+      "duration_ms": 22924.820354000076
+    },
+    {
+      "test": "Data Availability",
+      "status": "PASS",
+      "message": "Your account has accessible device data",
+      "duration_ms": null
+    },
+    {
+      "test": "Device Structure",
+      "status": "PASS",
+      "message": "Device data structure is valid",
+      "duration_ms": null
+    },
+    {
+      "test": "CRUD Operations",
+      "status": "PASS",
+      "message": "Device creation endpoint working",
+      "duration_ms": 1022.964021000007
+    }
+  ]
+}

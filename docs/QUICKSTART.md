@@ -1,33 +1,32 @@
-# Quick Start Guide - Microshare ERP Integration
+# Quick Start Guide
 
-Get up and running with the Microshare ERP Integration API in 5 minutes.
+Get the Microshare ERP Integration sample running in 5 minutes.
 
 ## Prerequisites
 
-- Docker and Docker Compose installed
-- Python 3.11+ (if running without Docker)
+- Python 3.11+
 - Internet access to Microshare API endpoints
+- Docker (optional)
 
-## 5-Minute Setup
+## Installation
 
-### Step 1: Clone Repository
 ```bash
-git clone https://github.com/microshare/microshare-erp-integration.git
+# Clone repository
+git clone https://github.com/cpaumelle/microshare-erp-integration.git
 cd microshare-erp-integration
-```
 
-### Step 2: Use Working Credentials
-```bash
-# Generic development credentials are already configured!
+# Use demo credentials
 cp .env.example .env
+
+# Install dependencies
+python3 -m pip install -r requirements.txt
+
+# Start the API
+PYTHONPATH=. python3 start_api.py
 ```
 
-### Step 3: Launch with Docker
-```bash
-docker-compose up -d
-```
+## Verify Installation
 
-### Step 4: Verify Installation
 ```bash
 # Check health
 curl http://localhost:8000/health
@@ -36,24 +35,49 @@ curl http://localhost:8000/health
 open http://localhost:8000/docs
 
 # Test device discovery
-curl http://localhost:8000/devices/locations
+curl http://localhost:8000/api/v1/devices/
 ```
 
 ## What You Get
 
 - **FastAPI service** running on port 8000
-- **Working Microshare integration** with generic dev credentials
-- **Complete CRUD operations** for device management
-- **High-performance caching** with automatic refresh
+- **Working Microshare integration** with demo credentials
+- **Device CRUD operations** ready to use
+- **Smart caching** for production-level performance
 - **Interactive API docs** at http://localhost:8000/docs
 
 ## Next Steps
 
 1. **Explore the API** - Visit http://localhost:8000/docs
-2. **Run tests** - `pytest` to validate functionality
-3. **Check performance** - `python scripts/performance_benchmark.py`
-4. **Integrate your ERP** - See examples/ directory for patterns
+2. **Read the docs** - See [DEVELOPER_GUIDE.md](../DEVELOPER_GUIDE.md)
+3. **Test deployment** - Run `python3 validate_deployment.py`
+4. **Integrate your ERP** - Study the patterns in the code
 
 ## Need Your Own Credentials?
 
-See [MICROSHARE_CREDENTIALS.md](MICROSHARE_CREDENTIALS.md) for getting your own Microshare account.
+See [MICROSHARE_CREDENTIALS.md](MICROSHARE_CREDENTIALS.md) for setting up your own Microshare account.
+
+## Docker Alternative
+
+```bash
+docker-compose up --build
+```
+
+## Troubleshooting
+
+**Import Errors:**
+```bash
+# Use Python path
+PYTHONPATH=. python3 start_api.py
+```
+
+**Missing Dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+**Authentication Issues:**
+```bash
+# Check .env file exists and has credentials
+cat .env
+```

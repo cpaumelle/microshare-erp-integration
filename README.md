@@ -25,7 +25,11 @@ python3 -m pip install -r requirements.txt --break-system-packages
 # Option 1: Start server + run validation automatically
 PYTHONPATH=. python3 start_and_validate.py
 
-# Option 2: Start server only (foreground)
+# Option 2: Start server in background + validate manually
+PYTHONPATH=. python3 start_api.py &
+python3 scripts/validate_deployment.py
+
+# Option 3: Start server only (foreground)
 PYTHONPATH=. python3 start_api.py
 ```
 

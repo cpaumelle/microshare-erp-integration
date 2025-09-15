@@ -13,10 +13,10 @@ This is a **production-ready sample application** demonstrating how to integrate
 ## What This Sample Demonstrates
 
 ### Core Integration Patterns
-- **Bidirectional sync** between ERP inspection points and IoT sensor devices
+- **ERP Integration Framework** - Abstract patterns ready for concrete ERP implementations
 - **Device lifecycle management** from creation to deployment tracking
-- **Location hierarchy mapping** between business systems and IoT platforms
-- **Real-time incident correlation** between sensor data and service records
+- **Location hierarchy mapping** using standardized 6-layer arrays
+- **Bidirectional sync patterns** - Architectural foundation for ERP ↔ IoT sync
 
 ### Technical Architecture
 - **FastAPI** modern async Python web framework
@@ -107,11 +107,11 @@ microshare-erp-integration/
 - **Device type support** for rodent sensors and gateways
 - **Smart caching** for sub-second response times
 
-#### 3. ERP Integration Patterns
-- **Discovery system** for identifying unmapped inspection points
-- **Mapping logic** between ERP references and IoT device locations
-- **Gap analysis** for deployment planning
-- **Bidirectional sync** capabilities
+#### 3. ERP Integration Framework
+- **Abstract ERP adapter patterns** in `src/erp_adapter/` ready for implementation
+- **Standardized mapping logic** between ERP references and IoT device locations (location[3] field)
+- **Pluggable architecture** supporting multiple ERP systems
+- **Sync pattern templates** for bidirectional data flow
 
 ## Core Concepts
 
@@ -122,43 +122,58 @@ microshare-erp-integration/
 - **Devices**: The actual IoT devices that can be created, updated, and deleted
 - **Never modify clusters** - only manage devices within existing clusters
 
-### Device Types
+### Core Architecture Principles
+
+#### Clusters vs Devices - Critical Distinction
+
+**Essential concept for all developers:**
+- **CLUSTERS**: Read-only containers that define location hierarchy and device grouping
+- **DEVICES**: The actual IoT devices within clusters that can be CRUD'd
+- **NEVER create or modify clusters** - only manage devices within existing clusters
+
+#### Device Types
 
 #### Rodent Sensors (`io.microshare.trap.packed`)
+**Standard 6-Layer Location Array:**
 ```json
 {
-  "id": "00-00-00-00-00-00-00-00",
+  "id": "device-eui-string",
   "meta": {
     "location": [
-      "Customer Name",        // [0] Customer/Organization
-      "Site Name",           // [1] Site/Facility
-      "Area Name",           // [2] Area/Zone
-      "ERP_Reference",       // [3] ERP internal reference (critical for sync)
-      "Internal",            // [4] Placement (Internal/External)
-      "Bait/Lured"          // [5] Configuration type
+      "Customer Name",         // [0] Customer/Organization
+      "Site Name",            // [1] Site/Facility
+      "Area Name",            // [2] Area/Zone
+      "ERP_Reference",        // [3] CRITICAL: ERP internal reference
+      "Internal",             // [4] Placement: Internal | External
+      "Bait/Lured"           // [5] Configuration type
     ]
   },
-  "status": "pending",
-  "guid": "unique-identifier"
+  "status": "pending | active | inactive",
+  "device_type": "rodent_sensor",
+  "cluster_id": "cluster-identifier"
 }
 ```
 
 #### Gateway Devices (`io.microshare.gateway.health.packed`)
+**Standard 4-Layer Location Array:**
 ```json
 {
-  "id": "00-00-00-00-00-00-00-00",
+  "id": "gateway-eui-string",
   "meta": {
     "location": [
       "Customer Name",        // [0] Customer/Organization
       "Site Name",           // [1] Site/Facility
-      "Area Name",           // [2] Area/Zone
+      "Area Name",           // [2] Coverage area
       "Gateway_Location"     // [3] Gateway identifier
     ]
   },
-  "status": "active",
-  "guid": "gateway-identifier"
+  "status": "active | inactive",
+  "device_type": "gateway",
+  "cluster_id": "gateway-cluster-id"
 }
 ```
+
+**Performance Note**: Extended location arrays beyond standard 6/4 layers may impact query performance.
 
 ### ERP Integration Mapping
 
@@ -186,44 +201,38 @@ def map_erp_to_device(erp_inspection_point):
 
 ## API Reference
 
-### Authentication
+**⚠️ IMPORTANT**: For complete API documentation, see **[API_REFERENCE.md](docs/API_REFERENCE.md)** - the definitive source for all endpoints.
+
+### Quick Reference - Verified Endpoints
 
 ```python
-# POST /api/v1/auth/login
-{
-    "username": "your-username@company.com",
-    "password": "your-password"
-}
-# Returns: {"access_token": "jwt-token", "token_type": "bearer"}
+# Authentication
+POST /api/v1/auth/login     # Returns session_token
+GET  /api/v1/auth/status    # Auth status
+
+# Device Management
+GET    /api/v1/devices/           # List all devices
+POST   /api/v1/devices/create     # Create device (NOTE: /create endpoint)
+PUT    /api/v1/devices/{device_id} # Update device
+DELETE /api/v1/devices/{device_id} # Delete device
+
+# System Monitoring
+GET /health                            # Health check
+GET /api/v1/status                     # Detailed status
+GET /api/v1/devices/cache/status       # Cache monitoring
+GET /api/v1/devices/performance/benchmark # Performance metrics
 ```
 
-### Device Operations
+**Authentication Pattern**:
+```bash
+# Get session token
+TOKEN=$(curl -s -X POST http://localhost:8000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "user@example.com", "password": "password"}' \
+  | jq -r '.session_token')
 
-```python
-# GET /api/v1/devices/
-# List all devices across clusters
-
-# POST /api/v1/devices/
-# Create new device in appropriate cluster
-
-# PUT /api/v1/devices/{device_id}
-# Update existing device
-
-# DELETE /api/v1/devices/{device_id}
-# Remove device from cluster
-```
-
-### Discovery and Mapping
-
-```python
-# GET /api/v1/devices/discovery
-# Discover all devices and clusters
-
-# GET /api/v1/devices/clusters
-# List available device clusters
-
-# GET /api/v1/devices/performance/benchmark
-# Performance testing and validation
+# Use in authenticated requests
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8000/api/v1/devices/
 ```
 
 ## Configuration
@@ -379,42 +388,47 @@ python3 -c "from api.config.settings import settings; print(settings)"
 
 ### Basic ERP Sync Pattern
 
+**Note**: This demonstrates the pattern for future ERP implementations. Current system has abstract ERP framework ready.
+
 ```python
-from api.devices.crud import FastCRUDManager
-from api.auth.auth import authenticate
+import httpx
 
 async def sync_erp_inspection_points():
-    """Sync ERP inspection points to Microshare devices"""
+    """Example: Sync ERP inspection points to Microshare devices"""
+    base_url = "http://localhost:8000"
 
-    # Authenticate
-    token = await authenticate(username, password)
+    # Authenticate with FastAPI
+    async with httpx.AsyncClient() as client:
+        auth_response = await client.post(f"{base_url}/api/v1/auth/login", json={
+            "username": "your-username@company.com",
+            "password": "your-password"
+        })
 
-    # Initialize CRUD manager
-    crud = FastCRUDManager(token, api_base)
+        token = auth_response.json()["session_token"]
+        headers = {"Authorization": f"Bearer {token}"}
 
-    # Get ERP inspection points (your implementation)
-    erp_points = get_erp_inspection_points()
+        # Get ERP inspection points (your implementation)
+        erp_points = get_erp_inspection_points()
 
-    for point in erp_points:
-        device_data = {
-            "id": "00-00-00-00-00-00-00-00",
-            "meta": {
-                "location": [
-                    point.customer,
-                    point.site,
-                    point.area,
-                    point.internal_reference,  # Critical for sync
-                    point.placement or "Internal",
-                    point.configuration or "Bait/Lured"
-                ]
-            },
-            "status": "pending",
-            "guid": f"erp-sync-{point.id}"
-        }
+        for point in erp_points:
+            device_data = {
+                "customer": point.customer,
+                "site": point.site,
+                "area": point.area,
+                "erp_reference": point.internal_reference,  # Critical for sync
+                "placement": point.placement or "Internal",
+                "configuration": point.configuration or "Bait/Lured",
+                "device_type": "rodent_sensor"
+            }
 
-        # Create device in appropriate cluster
-        result = await crud.create_device(device_data)
-        print(f"Created device for {point.internal_reference}: {result}")
+            # Create device using correct endpoint
+            result = await client.post(
+                f"{base_url}/api/v1/devices/create",  # Note: /create endpoint
+                json=device_data,
+                headers=headers
+            )
+
+            print(f"Created device for {point.internal_reference}: {result.status_code}")
 ```
 
 ### Custom ERP Adapter

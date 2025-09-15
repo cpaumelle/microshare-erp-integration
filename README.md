@@ -72,17 +72,20 @@ api/
 ### Getting Started
 - **[Quick Start Guide](docs/QUICKSTART.md)** - Get running in 5 minutes
 - **[Credentials Setup](docs/MICROSHARE_CREDENTIALS.md)** - Getting Microshare API access
-- **[API Docs](http://localhost:8000/docs)** - Interactive API documentation (when running)
+- **[Interactive API Docs](http://localhost:8000/docs)** - Live API documentation (when running)
+
+### API Reference
+- **[API Reference](docs/API_REFERENCE.md)** - **⭐ Definitive endpoint documentation**
+- **[Performance Testing](test_endpoints.py)** - Endpoint validation script
 
 ### Development & Integration
 - **[Developer Guide](DEVELOPER_GUIDE.md)** - Complete development documentation
-- **[Device CRUD Guide](microshare_device_crud.md)** - Detailed device operations guide
 - **[Implementation Guide](docs/MICROSHARE_DEVELOPER_IMPLEMENTATION_GUIDE.md)** - Technical implementation patterns
 
 ### Architecture & Vision
 - **[ERP Integration Architecture](docs/ERP_SYNC_DOCUMENTATION_UPDATED.md)** - Complete architecture and roadmap
-- **[Legacy Documentation](docs/ERP_SYNC_DOCUMENTATION.md)** - Original documentation (archived)
 - **[Changelog](CHANGELOG.md)** - Version history and changes
+- **[Archived Documentation](docs/archived/)** - Retired documents (consolidated)
 
 ## Configuration
 

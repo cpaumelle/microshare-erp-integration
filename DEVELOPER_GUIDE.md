@@ -37,8 +37,8 @@ This is a **production-ready sample application** demonstrating how to integrate
 ### 5-Minute Setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/cpaumelle/microshare-erp-integration.git
+# Clone the repository (use v3.0-github-ready for latest fixes)
+git clone -b v3.0-github-ready https://github.com/cpaumelle/microshare-erp-integration.git
 cd microshare-erp-integration
 
 # Copy working demo credentials

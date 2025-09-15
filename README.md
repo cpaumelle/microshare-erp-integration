@@ -14,8 +14,8 @@ This sample provides:
 ## Quick Start
 
 ```bash
-# Clone and setup
-git clone https://github.com/cpaumelle/microshare-erp-integration.git
+# Clone and setup (use v3.0-github-ready branch for latest fixes)
+git clone -b v3.0-github-ready https://github.com/cpaumelle/microshare-erp-integration.git
 cd microshare-erp-integration
 cp .env.example .env  # Demo credentials included
 

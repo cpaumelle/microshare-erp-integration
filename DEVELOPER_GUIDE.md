@@ -32,6 +32,8 @@ This is a **production-ready sample application** demonstrating how to integrate
 - Docker and Docker Compose (optional)
 - Access to Microshare platform (demo credentials included)
 
+**Note**: Modern Python environments (Ubuntu 24.04+, Python 3.12+) use `--break-system-packages` flag for global installs, which is included in all our installation commands.
+
 ### 5-Minute Setup
 
 ```bash
@@ -43,7 +45,7 @@ cd microshare-erp-integration
 cp .env.example .env
 
 # Install dependencies
-python3 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt --break-system-packages
 
 # Start the API server
 PYTHONPATH=. python3 start_api.py
@@ -347,9 +349,13 @@ PYTHONPATH=. python3 start_api.py
 
 #### Dependency Issues
 ```bash
+# Error: "externally-managed-environment" (Ubuntu 24.04+)
+# Solution: Use break-system-packages flag
+python3 -m pip install -r requirements.txt --break-system-packages
+
 # Error: Missing pydantic_settings
-# Solution: Install dependencies
-pip install -r requirements.txt
+# Solution: Install dependencies with flag
+pip install -r requirements.txt --break-system-packages
 ```
 
 ### Debugging

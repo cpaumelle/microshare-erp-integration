@@ -20,7 +20,7 @@ cd microshare-erp-integration
 cp .env.example .env  # Demo credentials included
 
 # Install and run
-python3 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt --break-system-packages
 PYTHONPATH=. python3 start_api.py
 ```
 
